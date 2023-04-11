@@ -2,7 +2,8 @@
 const express = require('express');
 const app = express();
 
-
+// Activate Model
+require('./models');
 
 app.get('/',(req, res)=>{
     res.send('Hello Ustay');
