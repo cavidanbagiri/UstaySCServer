@@ -29,16 +29,35 @@ const sequelize = new Sequelize(
   }
 })();
 
+
+// Import Models
+const ProjectModel = require('../models/model.project');
+const DepartmentModel = require('../models/model.department');
+const UserModel = require('../models/model.user');
+
 // Create an empty Object
 const db = {};
 
+// Create Sequelize Object
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
+
+// Create Model Instance
+db.ProjectModel = ProjectModel(sequelize, DataTypes, Model);
+db.DepartmentModel = DepartmentModel(sequelize, DataTypes, Model);
+db.UserModel = UserModel(sequelize, DataTypes, Model);
+
+// Create a Relationship
+db.ProjectModel.hasMany(db.UserModel);
+db.UserModel.belongsTo(db.ProjectModel);
+db.DepartmentModel.hasMany(db.UserModel);
+db.UserModel.belongsTo(db.DepartmentModel); 
+
 
 // Sync Database
 db.sequelize
   .sync({ force: false })
-  .then((_) => {
+  .then( ( _ )  => {
     console.log("Sync Database");
   })
   .catch((err) => {
