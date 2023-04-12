@@ -5,10 +5,10 @@ const app = express();
 // Activate Model
 require('./models');
 
-app.get('/',(req, res)=>{
-    res.send('Hello Ustay');
-})
+// Import Routes
+const { OrderRoutes } = require('./routes');
 
+app.use('/order', OrderRoutes);
 
 app.listen(3000,()=>{
     console.log('listening 3000 port');
