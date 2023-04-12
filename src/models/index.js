@@ -65,14 +65,14 @@ db.DepartmentModel.hasMany(db.MTFModel);
 db.MTFModel.belongsTo(db.DepartmentModel);
 
 // Sync Database
-db.sequelize
-  .sync({ force: false })
-  .then((_) => {
-    console.log("Sync Database");
-  })
-  .catch((err) => {
-    console.log("Sync Database Error : ", err);
-  });
+// db.sequelize
+//   .sync({ force: false })
+//   .then((_) => {
+//     console.log("Sync Database");
+//   })
+//   .catch((err) => {
+//     console.log("Sync Database Error : ", err);
+//   });
 
 
 module.exports = db;
