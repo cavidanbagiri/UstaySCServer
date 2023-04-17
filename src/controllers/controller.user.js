@@ -7,10 +7,14 @@ class UserController {
 
         const user_inform = req.body;
 
-        UserService.LoginUser(user_inform)
-
-        res.send('User Login');
-
+        await UserService.LoginUser(user_inform)
+        .then((user)=>{
+            console.log('from inside user : ',user);
+            user.password = ''
+            return res.status(200).send(user)
+        }).catch((err)=>{
+            return res.send('error is : ',err);
+        })
     }
 
 }
