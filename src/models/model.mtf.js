@@ -11,19 +11,19 @@ module.exports = (sequelize, DataTypes, Model) => {
         },
         mtf_num:{
             type:DataTypes.STRING,
-            allowNull:false,
+            allowNull:true,
         },
-        material_type: {
+        type: {
             type: DataTypes.STRING,
             allowNull: false
         },
-        material_name: {
+        name: {
             type: DataTypes.STRING,
             allowNull: false
         },
-        material_name_other: {
+        link: {
             type: DataTypes.STRING,
-            allowNull: false
+            allowNull: true
         },
         count: {
             type: DataTypes.FLOAT,
@@ -39,7 +39,7 @@ module.exports = (sequelize, DataTypes, Model) => {
         },
         comment: {
             type: DataTypes.STRING,
-            allowNull: false
+            allowNull: true
         },
     },{
         tableName:'mtfs',
