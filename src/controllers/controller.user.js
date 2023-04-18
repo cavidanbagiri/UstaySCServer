@@ -9,7 +9,6 @@ class UserController {
 
         await UserService.LoginUser(user_inform)
         .then((user)=>{
-            console.log('from inside user : ',user);
             user.password = ''
             return res.status(200).send(user)
         }).catch((err)=>{
