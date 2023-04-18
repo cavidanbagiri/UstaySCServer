@@ -3,16 +3,18 @@ const db = require("../models");
 const MTFModel = db.MTFModel;
 
 class OrderService {
+
   // Create a MTF form
   static async createMtf(data) {
     const user_data = data.user;
     const order_data = data.orders;
+    console.log('order data : ',order_data);
     let return_data = '';
     let mtf_num = 0;
     for (let i = 0; i < order_data.length; i++) {
       if (
-        order_data[i].type !== "" &&
-        order_data[i].name !== "" &&
+        order_data[i].material_type !== "" &&
+        order_data[i].material_name !== "" &&
         order_data[i].count !== 0 &&
         order_data[i].count !== ""
       ) {
@@ -46,10 +48,19 @@ class OrderService {
     return return_data;
   }
 
-  // Get Last ID from database
-  static async getLastId() {
-    const query = "";
+  // Show User MTF
+  static async showMTF(userData) {
+    const user_id = userData.id;
+    const project_id = userData.ProjectModelId;
+
+    const string_query = `SELECT *, users.username as username FROM mtfs  
+    LEFT JOIN users ON users.id=mtfs."UserModelId"
+    WHERE mtfs."UserModelId"=${user_id} AND mtfs."ProjectModelId"=${project_id}
+    `;
+    const result = await db.sequelize.query(string_query);
+    return result[0];
   }
+
 }
 
 module.exports = OrderService;

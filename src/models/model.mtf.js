@@ -13,11 +13,11 @@ module.exports = (sequelize, DataTypes, Model) => {
             type:DataTypes.STRING,
             allowNull:true,
         },
-        type: {
+        material_type: {
             type: DataTypes.STRING,
             allowNull: false
         },
-        name: {
+        material_name: {
             type: DataTypes.STRING,
             allowNull: false
         },
