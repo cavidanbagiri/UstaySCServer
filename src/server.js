@@ -9,7 +9,7 @@ require('./models');
 // Import Routes
 const { OrderRoutes, UserRoutes } = require('./routes');
 
-app.use(express.json());
+app.use(express.json());  
 
 app.use(cors())
 
