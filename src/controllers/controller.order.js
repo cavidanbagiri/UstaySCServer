@@ -12,11 +12,12 @@ class OrderController {
         await OrderService.createMtf(data)
         .then((respond)=>{
             console.log('Creating MTF success : ', respond);
+            return res.send(respond);
         }).catch((err)=>{
             console.log('Creating MTF Failed : ', err);
         })
 
-        res.send('Create Order MTF can work');
+        // res.send('Create Order MTF can work');
 
     }
 
