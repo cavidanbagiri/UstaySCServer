@@ -1,3 +1,4 @@
+const moment = require('moment');
 
 module.exports = (sequelize, DataTypes, Model) => {
 
@@ -41,9 +42,16 @@ module.exports = (sequelize, DataTypes, Model) => {
             type: DataTypes.STRING,
             allowNull: true
         },
+        created_at: {
+            allowNull: false,
+            type: DataTypes.DATE,
+            defaultValue: moment(new Date()).format('YYYY-MM-DD'),
+        },
     },{
         tableName:'mtfs',
-        sequelize
+        updatedAt: false,
+        createdAt: false,
+        sequelize,
     })
 
 

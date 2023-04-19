@@ -58,6 +58,7 @@ class OrderService {
     WHERE mtfs."UserModelId"=${user_id} AND mtfs."ProjectModelId"=${project_id}
     `;
     const result = await db.sequelize.query(string_query);
+    console.log(result[0]);
     return result[0];
   }
 
