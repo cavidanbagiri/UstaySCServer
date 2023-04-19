@@ -10,7 +10,7 @@ class UserService {
             email:user_data.email,
             password: user_data.password
         }});
-
+        console.log('return user is : ',user);
         return user;
 
     }

@@ -10,9 +10,9 @@ class UserController {
         await UserService.LoginUser(user_inform)
         .then((user)=>{
             user.password = ''
-            return res.status(200).send(user)
+            res.status(200).send(user)
         }).catch((err)=>{
-            return res.send('error is : ',err);
+            res.status(400).send(err);
         })
     }
 
