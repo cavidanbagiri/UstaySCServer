@@ -5,6 +5,6 @@ module.exports = {
     USERNAME:'postgres',
     PASSWORD:'Initial_123',
     HOST:'localhost',
-    DIALECT:'postgres'
-
+    DIALECT:'postgres',
+    TIMEZONE: 'utc'
 }

@@ -44,13 +44,11 @@ module.exports = (sequelize, DataTypes, Model) => {
         },
         created_at: {
             allowNull: false,
-            type: DataTypes.DATE,
+            type: DataTypes.DATEONLY,
             defaultValue: moment(new Date()).format('YYYY-MM-DD'),
         },
     },{
         tableName:'mtfs',
-        updatedAt: false,
-        createdAt: false,
         sequelize,
     })
 

@@ -10,7 +10,8 @@ const sequelize = new Sequelize(
   {
     host: dbConfig.HOST,
     dialect: dbConfig.DIALECT,
-  }
+  },
+  dbConfig.TIMEZONE
 );
 
 // Create Connection
