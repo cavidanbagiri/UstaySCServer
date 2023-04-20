@@ -19,13 +19,10 @@ class OrderController {
     static async showMTF(req, res, next){
         // Get User Inform for getting possible MTFS from mtfs table
         const user_inform = {};
-        user_inform.id=req.query;
-        const user_data = {
-            id:2,
-            ProjectModelId:1
-        };
+        user_inform.id=req.query.id;
+        user_inform.ProjectModelId=req.query.ProjectModelId;
         // Get Data From Service
-        await OrderService.showMTF(user_data)
+        await OrderService.showMTF(user_inform)
         .then((respond)=>{  
             return res.send(respond);
         }).catch((err)=>{
