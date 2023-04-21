@@ -5,7 +5,7 @@ const router = express.Router();
 
 const OrderController = require('../controllers/controller.order');
 
-router.post('/createmtf', OrderController.createMtf);
+router.post('/mtf', OrderController.createMtf);
 router.get('/showorders',OrderController.showMTF);
 
 module.exports = router

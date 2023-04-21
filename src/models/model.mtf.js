@@ -38,6 +38,16 @@ module.exports = (sequelize, DataTypes, Model) => {
             type: DataTypes.STRING,
             allowNull: false
         },
+        material_status: {
+            type: DataTypes.STRING,
+            defaultValue:'Normally',
+            allowNull:true
+        },
+        cond: {
+            type: DataTypes.STRING,
+            defaultValue:'Wait',
+            allowNull:true
+        },
         comment: {
             type: DataTypes.STRING,
             allowNull: true

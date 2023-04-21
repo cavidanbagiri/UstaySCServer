@@ -7,7 +7,7 @@ var cors = require('cors')
 require('./models');
 
 // Import Routes
-const { OrderRoutes, UserRoutes } = require('./routes');
+const { OrderRoutes, UserRoutes, ProcurementRoutes } = require('./routes');
 
 app.use(express.json());  
 
@@ -15,6 +15,7 @@ app.use(cors())
 
 app.use('/user', UserRoutes);
 app.use('/order', OrderRoutes);
+app.use('/procurement', ProcurementRoutes);
 
 app.listen(3000,()=>{
     console.log('listening 3000 port');
