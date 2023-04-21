@@ -53,12 +53,11 @@ class OrderService {
     const user_id = userData.id;
     const project_id = userData.ProjectModelId;
 
-    const string_query = `SELECT *, users.username as username FROM mtfs  
+    const string_query = `SELECT mtfs.*, users.username as username FROM mtfs  
     LEFT JOIN users ON users.id=mtfs."UserModelId"
     WHERE mtfs."UserModelId"=${user_id} AND mtfs."ProjectModelId"=${project_id}
     `;
     const result = await db.sequelize.query(string_query);
-    console.log(result[0]);
     return result[0];
   }
 
