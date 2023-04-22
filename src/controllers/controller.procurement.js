@@ -13,6 +13,18 @@ class ProcurementController {
         })
     }
 
+    static async createStf(req, res, next) {
+        // Get Waiting MTF data for creating stf
+        const data = req.body;
+            
+        await ProcurementService.createStf
+        .then((respond)=>{
+            res.send(respond);
+        }).catch((err)=>{
+            console.log('Get Waiting MTF Error ');
+        })
+    }
+
 }
 
 module.exports = ProcurementController
