@@ -7,6 +7,6 @@ const OrderController = require('../controllers/controller.order');
 
 router.post('/mtf', OrderController.createMtf);
 router.get('/showorders',OrderController.showMTF);
-router.get('/getfields',OrderController.fetchField);
+router.get('/getfields/:projectmodelid',OrderController.fetchField);
 
 module.exports = router

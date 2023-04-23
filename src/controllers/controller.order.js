@@ -33,8 +33,8 @@ class OrderController {
 
     // Fetch Fields From Fields Model
     static async fetchField(req, res, next){
-        // const ProjectModelId = req.body;
-        const ProjectModelId = 1;
+        const ProjectModelId = req.params.projectmodelid;
+        // const ProjectModelId = 1;
         await OrderService.fetchField(ProjectModelId)
         .then((respond)=>{  
             return res.send(respond);
