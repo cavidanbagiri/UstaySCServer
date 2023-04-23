@@ -15,7 +15,7 @@ class OrderController {
         })
     }
 
-    // Show MTF For User
+    // Fetch MTF For User
     static async showMTF(req, res, next){
         // Get User Inform for getting possible MTFS from mtfs table
         const user_inform = {};
@@ -30,6 +30,18 @@ class OrderController {
         })
 
     }   
+
+    // Fetch Fields From Fields Model
+    static async fetchField(req, res, next){
+        // const ProjectModelId = req.body;
+        const ProjectModelId = 1;
+        await OrderService.fetchField(ProjectModelId)
+        .then((respond)=>{  
+            return res.send(respond);
+        }).catch((err)=>{
+            console.log('Getting MTF Is Wrong');
+        }); 
+    }
 
 }
 

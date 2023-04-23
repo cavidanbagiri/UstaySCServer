@@ -1,6 +1,7 @@
 const db = require("../models");
 
 const MTFModel = db.MTFModel;
+const FieldsModel = db.FieldsModel;
 
 class OrderService {
 
@@ -8,7 +9,6 @@ class OrderService {
   static async createMtf(data) {
     const user_data = data.user;
     const order_data = data.orders;
-    console.log('order data : ',order_data);
     let return_data = '';
     let mtf_num = 0;
     for (let i = 0; i < order_data.length; i++) {
@@ -60,6 +60,14 @@ class OrderService {
     const result = await db.sequelize.query(string_query);
     return result[0];
   }
+
+   // Fetch Fields From Fields Model
+   static async fetchField(ProjectModelId){
+    const string_query = `select id, field_name from fields where "ProjectModelId" = ${ProjectModelId} `;
+    const fields = await db.sequelize.query(string_query);
+    console.log(fields[0]);
+    return fields[0];
+   }
 
 }
 

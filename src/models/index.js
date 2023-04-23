@@ -38,7 +38,7 @@ const MTFModel = require("../models/model.mtf");
 const STFModel = require('../models/model.stf');
 const VendorModel = require('../models/model.vendor');
 const StatusModel = require('../models/model.status');
-const FieldName = require('../models/model.fields');
+const FieldsModel = require('../models/model.fields');
 
 // Create an empty Object
 const db = {};
@@ -55,7 +55,8 @@ db.MTFModel = MTFModel(sequelize, DataTypes, Model);
 db.STFModel = STFModel(sequelize, DataTypes, Model);
 db.VendorModel = VendorModel(sequelize, DataTypes, Model);
 db.StatusModel = StatusModel(sequelize, DataTypes, Model);
-db.FieldName = FieldName(sequelize, DataTypes, Model);
+db.FieldsModel = FieldsModel(sequelize, DataTypes, Model);
+
 /**************************************** Create a Relationship **************/
 
 // User Model Relationship
@@ -68,8 +69,9 @@ db.UserModel.belongsTo(db.DepartmentModel);
 db.StatusModel.hasMany(db.UserModel);
 db.UserModel.belongsTo(db.StatusModel);
 
-db.ProjectModel.hasMany(db.FieldName);
-db.FieldName.belongsTo(db.ProjectModel);
+// Field Model Relationship
+db.ProjectModel.hasMany(db.FieldsModel);
+db.FieldsModel.belongsTo(db.ProjectModel);
 
 // MTF Model Relationship
 db.ProjectModel.hasMany(db.MTFModel);
@@ -78,8 +80,8 @@ db.UserModel.hasMany(db.MTFModel);
 db.MTFModel.belongsTo(db.UserModel);
 db.DepartmentModel.hasMany(db.MTFModel);
 db.MTFModel.belongsTo(db.DepartmentModel);
-db.FieldName.hasMany(db.MTFModel);
-db.MTFModel.belongsTo(db.FieldName);
+db.FieldsModel.hasMany(db.MTFModel);
+db.MTFModel.belongsTo(db.FieldsModel);
 
 // STF Model Relationship
 db.ProjectModel.hasMany(db.STFModel);
@@ -95,14 +97,14 @@ db.STFModel.belongsTo(db.UserModel);
 
 
 // Sync Database
-db.sequelize
-  .sync({ force: false })
-  .then((_) => {
-    console.log("Sync Database");
-  })
-  .catch((err) => {
-    console.log("Sync Database Error : ", err);
-  });
+// db.sequelize
+//   .sync({ force: false })
+//   .then((_) => {
+//     console.log("Sync Database");
+//   })
+//   .catch((err) => {
+//     console.log("Sync Database Error : ", err);
+//   });
 
 
 module.exports = db;
