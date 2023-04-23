@@ -34,10 +34,6 @@ module.exports = (sequelize, DataTypes, Model) => {
             type: DataTypes.STRING,
             allowNull: false
         },
-        field: {
-            type: DataTypes.STRING,
-            allowNull: false
-        },
         material_status: {
             type: DataTypes.STRING,
             defaultValue:'Normally',

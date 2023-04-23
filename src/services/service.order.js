@@ -53,11 +53,17 @@ class OrderService {
     const user_id = userData.id;
     const project_id = userData.ProjectModelId;
 
-    const string_query = `SELECT mtfs.*, users.username as username FROM mtfs  
+    const string_query = `SELECT mtfs.*, users.username as username, f.field_name as fieldname FROM mtfs  
     LEFT JOIN users ON users.id=mtfs."UserModelId"
+    left join fields f on f.id=mtfs."FieldsModelId"
     WHERE mtfs."UserModelId"=${user_id} AND mtfs."ProjectModelId"=${project_id}
+    ORDER BY mtfs.mtf_num DESC
     `;
-    const result = await db.sequelize.query(string_query);
+    const result = await db.sequelize.query(string_query)
+
+
+
+    console.log('result is : ',result[0]);
     return result[0];
   }
 
@@ -65,7 +71,6 @@ class OrderService {
    static async fetchField(ProjectModelId){
     const string_query = `select id, field_name from fields where "ProjectModelId" = ${ProjectModelId} `;
     const fields = await db.sequelize.query(string_query);
-    console.log(fields[0]);
     return fields[0];
    }
 
