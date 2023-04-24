@@ -9,8 +9,8 @@ class OrderService {
   static async createMtf(data) {
     const user_data = data.user;
     const order_data = data.orders;
-    let return_data = '';
     let mtf_num = 0;
+    let return_data = '';
     for (let i = 0; i < order_data.length; i++) {
       if (
         order_data[i].material_type !== "" &&
@@ -44,8 +44,10 @@ class OrderService {
         const temp = await MTFModel.create(order_data[i]);
       }
     }
-
-    return return_data;
+    // Fect Creating MTF and send Client Side
+    const string_query = `SELECT mtfs.*, u.username FROM mtfs LEFT JOIN users u on mtfs."UserModelId"=u.id where mtf_num = '${mtf_num}'`;
+    const result_data = await db.sequelize.query(string_query);
+    return result_data[0];
   }
 
   // Show User MTF
