@@ -11,7 +11,7 @@ module.exports = (sequelize, DataTypes, Model) => {
             primaryKey: true
         },
         procurement_coming_date : {
-            type: DataTypes.DATE
+            type: DataTypes.DATEONLY,
         },
         price : {
             type: DataTypes.FLOAT,
