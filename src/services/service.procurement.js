@@ -14,19 +14,6 @@ class ProcurementService {
     // Get Waiting MTF From MTF Tables
     static async getWaitingMTF(){
 
-        // Get All Data From mtfs table
-        // const temp_string_query = 'select * from mtfs ';
-
-        // Execute query
-        // const resu = await db.sequelize.query(temp_string_query);
-        // for(let i = 0 ; i < resu[0].length ; i ++ ){
-        //     const temp = await ConditionModel.create({
-        //         'condition': 'Waiting',
-        //         "MTFModelId": resu[0][i].id,
-        //         "ProjectModelId": 1
-        //     })
-        // }
-
         const string_query = `select m.*, u.username, u."ProjectModelId", u."DepartmentModelId", f.field_name as fieldName, c.condition as cond from mtfs m
         left join users u on m."UserModelId"=u.id
         left join fields f on f.id=m."FieldsModelId"
@@ -40,6 +27,8 @@ class ProcurementService {
 
     // Create STF Function
     static async createStf(data){
+        console.log('data : ',data);
+        // Create stf from MTF
         let sm_num = '';
         let returning_data = ''
         for(let i = 0 ; i < data.length; i ++ ){
@@ -56,14 +45,23 @@ class ProcurementService {
                             sm_num = `DCU.RS21.${counting}`
                             break;
                     }
+                    // Set sm_num
                     returning_data = await db.sequelize.query(
                         `update stfs set sm_num = '${sm_num}' where id=${creating_data.id}`
                     );
+                    // Change condition from conditions table
+                    const update_data = await db.sequelize.query(
+                        `update conditions set condition='processing' where "MTFModelId"=${data[i].MTFModelId}`
+                    )
                     continue
                 }
             }
             data[i].sm_num = sm_num;
             const temp = await STFModel.create(data[i]);
+            // Change condition from conditions table
+            const update_data = await db.sequelize.query(
+                `update conditions set condition='processing' where "MTFModelId"=${data[i].MTFModelId}`
+            )
         }
 
         return 'OK';
