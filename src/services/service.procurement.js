@@ -14,6 +14,7 @@ class ProcurementService {
     // Get Waiting STF From STF Tables
     static async getWaitingSTF(){
 
+
         // const res_query = await db.sequelize.query('select id, "ProjectModelId" from stfs'); 
         // for(let i = 0 ; i < res_query[0].length; i ++ ){
         //     const some = await ConditionModel.create({
@@ -25,6 +26,9 @@ class ProcurementService {
 
 
         const string_query = `select m.*, u.username, u."ProjectModelId", u."DepartmentModelId", f.field_name as fieldName, c.condition as cond from stfs m
+
+        const string_query = `select m.*, u.username, u."ProjectModelId", u."DepartmentModelId", f.field_name as fieldName, c.condition as cond from mtfs m
+
         left join users u on m."UserModelId"=u.id
         left join fields f on f.id=m."FieldsModelId"
         left join conditions c on c."STFModelId"=m.id
@@ -36,8 +40,14 @@ class ProcurementService {
     }
 
     // Create STF Function
+
     static async createSm(data){
         console.log('sm data  : ',data);
+
+    static async createStf(data){
+        console.log('data : ',data);
+        // Create stf from MTF
+
         let sm_num = '';
         let returning_data = ''
         for(let i = 0 ; i < data.length; i ++ ){
@@ -54,19 +64,33 @@ class ProcurementService {
                             sm_num = `DCU.RS21.${counting}`
                             break;
                     }
+                    // Set sm_num
                     returning_data = await db.sequelize.query(
                         `update sms set sm_num = '${sm_num}' where id=${creating_data.id}`
                     );
+
                     const temp = await db.sequelize.query(
                         `update conditions set condition='processing' where "STFModelId"=${data[i].STFModelId} `
+
+                    // Change condition from conditions table
+                    const update_data = await db.sequelize.query(
+                        `update conditions set condition='processing' where "MTFModelId"=${data[i].MTFModelId}`
+
                     )
                     continue
                 }
             }
             data[i].sm_num = sm_num;
+
             const temp = await SMModel.create(data[i]);
             const some_temp = await db.sequelize.query(
                 `update conditions set condition='processing' where "STFModelId"=${data[i].STFModelId} `
+
+            const temp = await STFModel.create(data[i]);
+            // Change condition from conditions table
+            const update_data = await db.sequelize.query(
+                `update conditions set condition='processing' where "MTFModelId"=${data[i].MTFModelId}`
+
             )
         }
 
