@@ -34,7 +34,7 @@ class OrderService {
                 mtf_num = `DCU.RS21.${counting}`;
                 break;
             }
-            return_data = db.sequelize.query(
+            return_data = await db.sequelize.query(
               `update mtfs set mtf_num = '${mtf_num}' where id=${creating_data.id}`
             );
             continue;

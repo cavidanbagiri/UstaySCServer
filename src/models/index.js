@@ -97,14 +97,14 @@ db.STFModel.belongsTo(db.UserModel);
 
 
 // Sync Database
-// db.sequelize
-//   .sync({ force: false })
-//   .then((_) => {
-//     console.log("Sync Database");
-//   })
-//   .catch((err) => {
-//     console.log("Sync Database Error : ", err);
-//   });
+db.sequelize
+  .sync({ force: false })
+  .then((_) => {
+    console.log("Sync Database");
+  })
+  .catch((err) => {
+    console.log("Sync Database Error : ", err);
+  });
 
 
 module.exports = db;

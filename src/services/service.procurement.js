@@ -24,10 +24,34 @@ class ProcurementService {
     // Create STF Function
     static async createStf(data){
         console.log('data is : ',data);
-        for(let i of data){
-            // let temp_date = new Date("2023-05-25");
-            i.procurement_coming_date = moment(i.procurement_coming_date).format('YYYY-MM-DD');
-            const res = await STFModel.create(i);
+        let sm_num = '';
+        let returning_data = ''
+        // for(let i of data){
+        //     i.procurement_coming_date = moment(i.procurement_coming_date).format('YYYY-MM-DD');
+        //     const res = await STFModel.create(i);
+        // }
+        for(let i = 0 ; i < data.length; i ++ ){
+            data[i].procurement_coming_date = moment(data[i].procurement_coming_date).format('YYYY-MM-DD');
+            if(i === 0){
+                const creating_data = await STFModel.create(data[i]);
+                if(creating_data.id){
+                    let counting = creating_data.id+1000;
+                    switch (data[i].ProjectModelId){
+                        case 1 : 
+                            sm_num = `SRU.RS21.${counting}`
+                            break;
+                        case 2:
+                            sm_num = `DCU.RS21.${counting}`
+                            break;
+                    }
+                    returning_data = await db.sequelize.query(
+                        `update stfs set sm_num = '${sm_num}' where id=${creating_data.id}`
+                    );
+                    continue
+                }
+            }
+            data[i].sm_num = sm_num;
+            const temp = await STFModel.create(data[i]);
         }
 
         return 'OK';

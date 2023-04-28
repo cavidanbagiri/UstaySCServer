@@ -10,6 +10,10 @@ module.exports = (sequelize, DataTypes, Model) => {
             autoIncrement: true,
             primaryKey: true
         },
+        sm_num : {
+            type: DataTypes.STRING,
+            allowNull: true,
+        },
         procurement_coming_date : {
             type: DataTypes.DATEONLY,
         },
@@ -22,7 +26,7 @@ module.exports = (sequelize, DataTypes, Model) => {
             allowNull: true
         },
         currency : {
-            type: DataTypes.CHAR(6),
+            type: DataTypes.CHAR(6), 
             allowNull: true
         },
         comment: {
@@ -30,9 +34,10 @@ module.exports = (sequelize, DataTypes, Model) => {
             allowNull: true
         },
         created_at: {
+            type: DataTypes.DATE,
+            defaultValue: sequelize.literal("CURRENT_TIMESTAMP"),
+            //defaultValue: moment(new Date()).format('YYYY-MM-DD'),
             allowNull: false,
-            type: DataTypes.DATEONLY,
-            defaultValue: moment(new Date()).format('YYYY-MM-DD'),
         },
     },{
         tableName:'stfs',
