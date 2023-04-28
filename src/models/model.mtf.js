@@ -3,7 +3,7 @@ const moment = require('moment');
 module.exports = (sequelize, DataTypes, Model) => {
 
     class MTFModel extends Model{}
-
+    const queryInterface = sequelize.getQueryInterface();
     MTFModel.init({
         id: {
             type: DataTypes.INTEGER,
@@ -39,11 +39,6 @@ module.exports = (sequelize, DataTypes, Model) => {
             defaultValue:'Normally',
             allowNull:true
         },
-        cond: {
-            type: DataTypes.STRING,
-            defaultValue:'Wait',
-            allowNull:true
-        },
         comment: {
             type: DataTypes.STRING,
             allowNull: true
@@ -57,7 +52,8 @@ module.exports = (sequelize, DataTypes, Model) => {
         tableName:'mtfs',
         sequelize,
     })
-
+    
+    // queryInterface.removeColumn('mtfs','cond');
 
     return MTFModel;
 

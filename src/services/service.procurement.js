@@ -7,29 +7,41 @@ const moment = require('moment');
 const MTFModel = db.MTFModel;
 const STFModel = db.STFModel;
 
+const ConditionModel = db.ConditionModel;
+
 class ProcurementService {
 
     // Get Waiting MTF From MTF Tables
     static async getWaitingMTF(){
-        const string_query = `select m.*, u.username, u."ProjectModelId", u."DepartmentModelId", f.field_name as fieldName from mtfs m
+
+        // Get All Data From mtfs table
+        // const temp_string_query = 'select * from mtfs ';
+
+        // Execute query
+        // const resu = await db.sequelize.query(temp_string_query);
+        // for(let i = 0 ; i < resu[0].length ; i ++ ){
+        //     const temp = await ConditionModel.create({
+        //         'condition': 'Waiting',
+        //         "MTFModelId": resu[0][i].id,
+        //         "ProjectModelId": 1
+        //     })
+        // }
+
+        const string_query = `select m.*, u.username, u."ProjectModelId", u."DepartmentModelId", f.field_name as fieldName, c.condition as cond from mtfs m
         left join users u on m."UserModelId"=u.id
         left join fields f on f.id=m."FieldsModelId"
-        where cond='Wait' 
+        left join conditions c on c.id=m.id
+        where c.condition='waiting' 
         ORDER BY m.mtf_num DESC
-        `
+        ` 
         const result = await db.sequelize.query(string_query);
         return result[0];
     }
 
     // Create STF Function
     static async createStf(data){
-        console.log('data is : ',data);
         let sm_num = '';
         let returning_data = ''
-        // for(let i of data){
-        //     i.procurement_coming_date = moment(i.procurement_coming_date).format('YYYY-MM-DD');
-        //     const res = await STFModel.create(i);
-        // }
         for(let i = 0 ; i < data.length; i ++ ){
             data[i].procurement_coming_date = moment(data[i].procurement_coming_date).format('YYYY-MM-DD');
             if(i === 0){
@@ -64,7 +76,6 @@ class ProcurementService {
         return result[0];
     }
 
-    // Fetch Users Names
     // Fetch Users Names
     static async fetchUsers(req, res, next) {
         let string_query = 'select id, username from users where "StatusModelId"=4 ';

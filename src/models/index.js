@@ -39,6 +39,7 @@ const STFModel = require('../models/model.stf');
 const VendorModel = require('../models/model.vendor');
 const StatusModel = require('../models/model.status');
 const FieldsModel = require('../models/model.fields');
+const ConditionModel = require('../models/model.condition');
 
 // Create an empty Object
 const db = {};
@@ -56,6 +57,7 @@ db.STFModel = STFModel(sequelize, DataTypes, Model);
 db.VendorModel = VendorModel(sequelize, DataTypes, Model);
 db.StatusModel = StatusModel(sequelize, DataTypes, Model);
 db.FieldsModel = FieldsModel(sequelize, DataTypes, Model);
+db.ConditionModel = ConditionModel(sequelize, DataTypes, Model);
 
 /**************************************** Create a Relationship **************/
 
@@ -95,16 +97,21 @@ db.STFModel.belongsTo(db.MTFModel);
 db.UserModel.hasMany(db.STFModel);
 db.STFModel.belongsTo(db.UserModel);
 
+// Condition Model
+db.MTFModel.hasMany(db.ConditionModel);
+db.ConditionModel.belongsTo(db.MTFModel);
+db.ProjectModel.hasMany(db.ConditionModel);
+db.ConditionModel.belongsTo(db.ProjectModel)
 
 // Sync Database
-db.sequelize
-  .sync({ force: false })
-  .then((_) => {
-    console.log("Sync Database");
-  })
-  .catch((err) => {
-    console.log("Sync Database Error : ", err);
-  });
+// db.sequelize
+//   .sync({ force: false })
+//   .then((_) => {
+//     console.log("Sync Database");
+//   })
+//   .catch((err) => {
+//     console.log("Sync Database Error : ", err);
+//   });
 
 
 module.exports = db;
