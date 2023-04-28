@@ -34,8 +34,8 @@ const sequelize = new Sequelize(
 const ProjectModel = require("../models/model.project");
 const DepartmentModel = require("../models/model.department");
 const UserModel = require("../models/model.user");
-const MTFModel = require("../models/model.mtf");
-const STFModel = require('../models/model.stf');
+const STFModel = require("./model.stf");
+const SMModel = require('./model.sm');
 const VendorModel = require('../models/model.vendor');
 const StatusModel = require('../models/model.status');
 const FieldsModel = require('../models/model.fields');
@@ -52,8 +52,8 @@ db.Sequelize = Sequelize;
 db.ProjectModel = ProjectModel(sequelize, DataTypes, Model);
 db.DepartmentModel = DepartmentModel(sequelize, DataTypes, Model);
 db.UserModel = UserModel(sequelize, DataTypes, Model);
-db.MTFModel = MTFModel(sequelize, DataTypes, Model);
 db.STFModel = STFModel(sequelize, DataTypes, Model);
+db.SMModel = SMModel(sequelize, DataTypes, Model);
 db.VendorModel = VendorModel(sequelize, DataTypes, Model);
 db.StatusModel = StatusModel(sequelize, DataTypes, Model);
 db.FieldsModel = FieldsModel(sequelize, DataTypes, Model);
@@ -75,43 +75,44 @@ db.UserModel.belongsTo(db.StatusModel);
 db.ProjectModel.hasMany(db.FieldsModel);
 db.FieldsModel.belongsTo(db.ProjectModel);
 
-// MTF Model Relationship
-db.ProjectModel.hasMany(db.MTFModel);
-db.MTFModel.belongsTo(db.ProjectModel);
-db.UserModel.hasMany(db.MTFModel);
-db.MTFModel.belongsTo(db.UserModel);
-db.DepartmentModel.hasMany(db.MTFModel);
-db.MTFModel.belongsTo(db.DepartmentModel);
-db.FieldsModel.hasMany(db.MTFModel);
-db.MTFModel.belongsTo(db.FieldsModel);
-
 // STF Model Relationship
 db.ProjectModel.hasMany(db.STFModel);
 db.STFModel.belongsTo(db.ProjectModel);
-db.DepartmentModel.hasMany(db.STFModel);
-db.STFModel.belongsTo(db.DepartmentModel);
-db.VendorModel.hasMany(db.STFModel);
-db.STFModel.belongsTo(db.VendorModel);
-db.MTFModel.hasMany(db.STFModel);
-db.STFModel.belongsTo(db.MTFModel);
 db.UserModel.hasMany(db.STFModel);
 db.STFModel.belongsTo(db.UserModel);
+db.DepartmentModel.hasMany(db.STFModel);
+db.STFModel.belongsTo(db.DepartmentModel);
+db.FieldsModel.hasMany(db.STFModel);
+db.STFModel.belongsTo(db.FieldsModel);
+
+// SM Model Relationship
+db.ProjectModel.hasMany(db.SMModel);
+db.SMModel.belongsTo(db.ProjectModel);
+db.DepartmentModel.hasMany(db.SMModel);
+db.SMModel.belongsTo(db.DepartmentModel);
+db.VendorModel.hasMany(db.SMModel);
+db.SMModel.belongsTo(db.VendorModel);
+db.STFModel.hasMany(db.SMModel);
+db.SMModel.belongsTo(db.STFModel);
+db.UserModel.hasMany(db.SMModel);
+db.SMModel.belongsTo(db.UserModel);
 
 // Condition Model
-db.MTFModel.hasMany(db.ConditionModel);
-db.ConditionModel.belongsTo(db.MTFModel);
+db.STFModel.hasMany(db.ConditionModel);
+db.ConditionModel.belongsTo(db.STFModel);
 db.ProjectModel.hasMany(db.ConditionModel);
 db.ConditionModel.belongsTo(db.ProjectModel)
 
+
 // Sync Database
-// db.sequelize
-//   .sync({ force: false })
-//   .then((_) => {
-//     console.log("Sync Database");
-//   })
-//   .catch((err) => {
-//     console.log("Sync Database Error : ", err);
-//   });
+db.sequelize
+  .sync({ force: false })
+  .then((_) => {
+    console.log("Sync Database");
+  })
+  .catch((err) => {
+    console.log("Sync Database Error : ", err);
+  });
 
 
 module.exports = db;

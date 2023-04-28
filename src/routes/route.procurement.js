@@ -5,8 +5,8 @@ const ProcurementController = require("../controllers/controller.procurement");
 const router  = express.Router();
 
 
-router.get('/waitingmtf', ProcurementController.getWaitingMTF);
-router.post('/createstf', ProcurementController.createStf);
+router.get('/waitingmtf', ProcurementController.getWaitingSTF);
+router.post('/createstf', ProcurementController.createSm);
 
 router.get('/companies', ProcurementController.fetchCompaniesNames);
 router.get('/users', ProcurementController.fetchUsers);

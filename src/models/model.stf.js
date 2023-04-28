@@ -2,49 +2,57 @@ const moment = require('moment');
 
 module.exports = (sequelize, DataTypes, Model) => {
 
-    class STFModel extends Model{};
-
+    class STFModel extends Model{}
+    const queryInterface = sequelize.getQueryInterface();
     STFModel.init({
-        id : {
+        id: {
             type: DataTypes.INTEGER,
             autoIncrement: true,
             primaryKey: true
         },
-        sm_num : {
+        stf_num:{
+            type:DataTypes.STRING,
+            allowNull:true,
+        },
+        material_type: {
             type: DataTypes.STRING,
-            allowNull: true,
+            allowNull: false
         },
-        procurement_coming_date : {
-            type: DataTypes.DATEONLY,
+        material_name: {
+            type: DataTypes.STRING,
+            allowNull: false
         },
-        price : {
-            type: DataTypes.FLOAT,
-            allowNull: true,
-        },
-        total : {
-            type: DataTypes.FLOAT,
+        link: {
+            type: DataTypes.STRING,
             allowNull: true
         },
-        currency : {
-            type: DataTypes.CHAR(6), 
-            allowNull: true
+        count: {
+            type: DataTypes.FLOAT,
+            allowNull: false
+        },
+        unit: {
+            type: DataTypes.STRING,
+            allowNull: false
+        },
+        material_status: {
+            type: DataTypes.STRING,
+            defaultValue:'Normally',
+            allowNull:true
         },
         comment: {
             type: DataTypes.STRING,
             allowNull: true
         },
         created_at: {
-            type: DataTypes.DATE,
-            defaultValue: sequelize.literal("CURRENT_TIMESTAMP"),
-            //defaultValue: moment(new Date()).format('YYYY-MM-DD'),
             allowNull: false,
+            type: DataTypes.DATEONLY,
+            defaultValue: moment(new Date()).format('YYYY-MM-DD'),
         },
     },{
         tableName:'stfs',
         sequelize,
     })
-
-
+    
 
     return STFModel;
 

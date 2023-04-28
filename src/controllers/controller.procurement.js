@@ -4,8 +4,8 @@ const ProcurementService = require("../services/service.procurement")
 class ProcurementController {
 
     // Get Waiting MTF From MTF Tables
-    static async getWaitingMTF(req, res, next){
-        await ProcurementService.getWaitingMTF()
+    static async getWaitingSTF(req, res, next){
+        await ProcurementService.getWaitingSTF()
         .then((respond)=>{
             res.send(respond);
         }).catch((err)=>{
@@ -14,11 +14,11 @@ class ProcurementController {
     }
 
     // Create STF
-    static async createStf(req, res, next) {
+    static async createSm(req, res, next) {
         // Get Waiting MTF data for creating stf
         const data = req.body;
             
-        await ProcurementService.createStf(data)
+        await ProcurementService.createSm(data)
         .then((respond)=>{
             return res.send(respond);
         }).catch((err)=>{

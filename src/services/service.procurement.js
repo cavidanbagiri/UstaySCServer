@@ -4,48 +4,46 @@ const db = require('../models/index');
 // Import Moment JS for Creating Coming Date
 const moment = require('moment');
 
-const MTFModel = db.MTFModel;
 const STFModel = db.STFModel;
+const SMModel = db.SMModel;
 
 const ConditionModel = db.ConditionModel;
 
 class ProcurementService {
 
-    // Get Waiting MTF From MTF Tables
-    static async getWaitingMTF(){
+    // Get Waiting STF From STF Tables
+    static async getWaitingSTF(){
 
-        // Get All Data From mtfs table
-        // const temp_string_query = 'select * from mtfs ';
-
-        // Execute query
-        // const resu = await db.sequelize.query(temp_string_query);
-        // for(let i = 0 ; i < resu[0].length ; i ++ ){
-        //     const temp = await ConditionModel.create({
-        //         'condition': 'Waiting',
-        //         "MTFModelId": resu[0][i].id,
-        //         "ProjectModelId": 1
+        // const res_query = await db.sequelize.query('select id, "ProjectModelId" from stfs'); 
+        // for(let i = 0 ; i < res_query[0].length; i ++ ){
+        //     const some = await ConditionModel.create({
+        //         "condition":'waiting',
+        //         "STFModelId": res_query[0][i].id,
+        //         "ProjectModelId": "1"
         //     })
         // }
 
-        const string_query = `select m.*, u.username, u."ProjectModelId", u."DepartmentModelId", f.field_name as fieldName, c.condition as cond from mtfs m
+
+        const string_query = `select m.*, u.username, u."ProjectModelId", u."DepartmentModelId", f.field_name as fieldName, c.condition as cond from stfs m
         left join users u on m."UserModelId"=u.id
         left join fields f on f.id=m."FieldsModelId"
-        left join conditions c on c.id=m.id
+        left join conditions c on c."STFModelId"=m.id
         where c.condition='waiting' 
-        ORDER BY m.mtf_num DESC
+        ORDER BY m.stf_num DESC
         ` 
         const result = await db.sequelize.query(string_query);
         return result[0];
     }
 
     // Create STF Function
-    static async createStf(data){
+    static async createSm(data){
+        console.log('sm data  : ',data);
         let sm_num = '';
         let returning_data = ''
         for(let i = 0 ; i < data.length; i ++ ){
             data[i].procurement_coming_date = moment(data[i].procurement_coming_date).format('YYYY-MM-DD');
             if(i === 0){
-                const creating_data = await STFModel.create(data[i]);
+                const creating_data = await SMModel.create(data[i]);
                 if(creating_data.id){
                     let counting = creating_data.id+1000;
                     switch (data[i].ProjectModelId){
@@ -57,13 +55,19 @@ class ProcurementService {
                             break;
                     }
                     returning_data = await db.sequelize.query(
-                        `update stfs set sm_num = '${sm_num}' where id=${creating_data.id}`
+                        `update sms set sm_num = '${sm_num}' where id=${creating_data.id}`
                     );
+                    const temp = await db.sequelize.query(
+                        `update conditions set condition='processing' where "STFModelId"=${data[i].STFModelId} `
+                    )
                     continue
                 }
             }
             data[i].sm_num = sm_num;
-            const temp = await STFModel.create(data[i]);
+            const temp = await SMModel.create(data[i]);
+            const some_temp = await db.sequelize.query(
+                `update conditions set condition='processing' where "STFModelId"=${data[i].STFModelId} `
+            )
         }
 
         return 'OK';
