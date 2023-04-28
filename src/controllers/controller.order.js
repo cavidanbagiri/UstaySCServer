@@ -4,9 +4,9 @@ const OrderService = require("../services/service.order");
 class OrderController {
 
     // Create a MTF form
-    static async createMtf(req, res, next){
+    static async createStf(req, res, next){
         const data = req.body;
-        await OrderService.createMtf(data)
+        await OrderService.createStf(data)
         .then((respond)=>{
             console.log('Creating MTF success : ', respond);
             return res.send(respond);
@@ -16,13 +16,13 @@ class OrderController {
     }
 
     // Fetch MTF For User
-    static async showMTF(req, res, next){
+    static async showSTF(req, res, next){
         // Get User Inform for getting possible MTFS from mtfs table
         const user_inform = {};
         user_inform.id=req.query.id;
         user_inform.ProjectModelId=req.query.ProjectModelId;
         // Get Data From Service
-        await OrderService.showMTF(user_inform)
+        await OrderService.showSTF(user_inform)
         .then((respond)=>{  
             return res.send(respond);
         }).catch((err)=>{
