@@ -2,6 +2,7 @@ const db = require("../models");
 
 const STFModel = db.STFModel;
 const FieldsModel = db.FieldsModel;
+const ConditionModel = db.ConditionModel;
 
 class OrderService {
 
@@ -37,11 +38,21 @@ class OrderService {
             return_data = await db.sequelize.query(
               `update stfs set stf_num = '${stf_num}' where id=${creating_data.id}`
             );
+            const adding_conditions = await ConditionModel.create({
+              "condition": 'waiting',
+              "STFModelId": creating_data.id,
+              "ProjectModelId": creating_data.ProjectModelId
+            });
             continue;
           }
         }
         order_data[i].stf_num = stf_num;
         const temp = await STFModel.create(order_data[i]);
+        const adding_conditions = await ConditionModel.create({
+          "condition": 'waiting',
+          "STFModelId": temp.id,
+          "ProjectModelId": temp.ProjectModelId
+        });
       }
     }
     // Fect Creating MTF and send Client Side
