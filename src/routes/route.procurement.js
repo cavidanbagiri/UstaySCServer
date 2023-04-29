@@ -5,6 +5,9 @@ const ProcurementController = require("../controllers/controller.procurement");
 const router  = express.Router();
 
 
+// Get All SM
+router.get('/', ProcurementController.getAllSm);
+
 router.get('/waitingmtf', ProcurementController.getWaitingSTF);
 router.post('/createstf', ProcurementController.createSm);
 

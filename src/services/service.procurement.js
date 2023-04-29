@@ -9,6 +9,16 @@ const SMModel = db.SMModel;
 const ConditionModel = db.ConditionModel;
 
 class ProcurementService {
+
+    // Fetch All SM
+    static async getAllSm(req, res, next){
+      
+      const string_query = `select * from sms left join stfs on sms."STFModelId"=stfs.id `;
+      const result = await db.sequelize.query(string_query);  
+      console.log('sm result : ',result[0]);
+      return result[0];
+      }
+
   // Get Waiting STF From STF Tables
   static async getWaitingSTF() {
     //const temp_string_query = `select m.*, u.username, u."ProjectModelId", u."DepartmentModelId", f.field_name as fieldName, c.condition as cond from stfs m`;

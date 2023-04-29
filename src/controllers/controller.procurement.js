@@ -3,6 +3,16 @@ const ProcurementService = require("../services/service.procurement")
 
 class ProcurementController {
 
+    // Getch All SM
+    static async getAllSm(req, res, next){
+        ProcurementService.getAllSm()
+        .then((respond)=>{
+            res.send(respond);
+        }).catch((err)=>{
+            console.log('Get All Sm Error : ',err);
+        })
+    }
+
     // Get Waiting MTF From MTF Tables
     static async getWaitingSTF(req, res, next){
         await ProcurementService.getWaitingSTF()
