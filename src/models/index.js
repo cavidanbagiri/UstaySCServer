@@ -40,6 +40,8 @@ const VendorModel = require('../models/model.vendor');
 const StatusModel = require('../models/model.status');
 const FieldsModel = require('../models/model.fields');
 const ConditionModel = require('../models/model.condition');
+const WarehouseModel = require('../models/model.warehouse');
+const DeliveryTypeModel = require('../models/model.delivery_type');
 
 // Create an empty Object
 const db = {};
@@ -58,6 +60,8 @@ db.VendorModel = VendorModel(sequelize, DataTypes, Model);
 db.StatusModel = StatusModel(sequelize, DataTypes, Model);
 db.FieldsModel = FieldsModel(sequelize, DataTypes, Model);
 db.ConditionModel = ConditionModel(sequelize, DataTypes, Model);
+db.WarehouseModel = WarehouseModel(sequelize, DataTypes, Model);
+db.DeliveryTypeModel = DeliveryTypeModel(sequelize, DataTypes, Model);
 
 /**************************************** Create a Relationship **************/
 
@@ -103,16 +107,38 @@ db.ConditionModel.belongsTo(db.STFModel);
 db.ProjectModel.hasMany(db.ConditionModel);
 db.ConditionModel.belongsTo(db.ProjectModel)
 
+// Warehouse Model
+db.SMModel.hasMany(db.WarehouseModel);
+db.WarehouseModel.belongsTo(db.SMModel);
+
+db.UserModel.hasMany(db.WarehouseModel,{
+  foreignKey: 'acceptedBy'
+});
+db.WarehouseModel.belongsTo(db.UserModel);
+
+db.ConditionModel.hasMany(db.WarehouseModel);
+db.WarehouseModel.belongsTo(db.ConditionModel);
+
+db.UserModel.hasMany(db.WarehouseModel,{
+  foreignKey: 'deliveryTo'
+});
+db.WarehouseModel.belongsTo(db.UserModel);
+
+db.DeliveryTypeModel.hasMany(db.WarehouseModel);
+db.WarehouseModel.belongsTo(db.DeliveryTypeModel);
+
+db.ProjectModel.hasMany(db.WarehouseModel);
+db.WarehouseModel.belongsTo(db.ProjectModel);
 
 // Sync Database
-db.sequelize
-  .sync({ force: false })
-  .then((_) => {
-    console.log("Sync Database");
-  })
-  .catch((err) => {
-    console.log("Sync Database Error : ", err);
-  });
+// db.sequelize
+//   .sync({ force: false })
+//   .then((_) => {
+//     console.log("Sync Database");
+//   })
+//   .catch((err) => {
+//     console.log("Sync Database Error : ", err);
+//   });
 
 
 module.exports = db;
