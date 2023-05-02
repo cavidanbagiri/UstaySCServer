@@ -5,7 +5,7 @@ class ProcurementController {
 
     // Getch All SM
     static async getAllSm(req, res, next){
-        ProcurementService.getAllSm()
+        await ProcurementService.getAllSm()
         .then((respond)=>{
             res.send(respond);
         }).catch((err)=>{
