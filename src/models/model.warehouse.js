@@ -18,6 +18,23 @@ module.exports = (sequelize, DataTypes, Model) => {
             allowNull: true,
             type: DataTypes.DATE,
             defaultValue: sequelize.literal("CURRENT_TIMESTAMP"),
+        },
+        doc_number: {
+            type: DataTypes.STRING,
+            allowNull: true
+        },
+        doc_date: {
+            allowNull: true,
+            type: DataTypes.DATE,
+            defaultValue: sequelize.literal("CURRENT_TIMESTAMP"),
+        },
+        passport: {
+            type: DataTypes.BOOLEAN,
+            allowNull: false,
+        },
+        certificate: {
+            type: DataTypes.BOOLEAN,
+            allowNull: false,
         }
     },{
         tableName:'warehouse',

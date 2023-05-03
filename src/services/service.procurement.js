@@ -13,11 +13,11 @@ class ProcurementService {
     // Fetch All SM
     static async getAllSm(){
       
-      const string_query = `select * from sms left join stfs on sms."STFModelId"=stfs.id 
+      const string_query = `select * from sms 
+      left join stfs on sms."STFModelId"=stfs.id 
       left join conditions c on c."STFModelId"=sms."STFModelId"
       left join vendors v on v.id=sms."VendorModelId"
-      left join users u on u.id=sms."UserModelId"
-      `;
+      left join users u on u.id=sms."UserModelId""`;
       const result = await db.sequelize.query(string_query);  
       console.log('sm result : ',result[0]);
       return result[0];
