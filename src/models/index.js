@@ -98,7 +98,9 @@ db.VendorModel.hasMany(db.SMModel);
 db.SMModel.belongsTo(db.VendorModel);
 db.STFModel.hasMany(db.SMModel);
 db.SMModel.belongsTo(db.STFModel);
-db.UserModel.hasMany(db.SMModel);
+db.UserModel.hasMany(db.SMModel,{
+  foreignKey: 'supplierName'
+});
 db.SMModel.belongsTo(db.UserModel);
 
 // Condition Model
