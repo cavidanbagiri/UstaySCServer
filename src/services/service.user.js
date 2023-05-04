@@ -2,6 +2,9 @@
 const db = require('../models/index');
 const UserModel = db.UserModel;
 
+// Import UserNotFoundError
+const UserNotFoundError = require('../exceptions/UserError');
+
 class UserService {
 
     static async LoginUser(user_data){
@@ -10,9 +13,12 @@ class UserService {
             email:user_data.email,
             password: user_data.password
         }});
-        console.log('return user is : ',user);
-        return user;
-
+        if(user) {
+            return user.dataValues;
+        }
+        else {
+            throw new UserNotFoundError('User Not Found',400);
+        }
     }
 
 }
