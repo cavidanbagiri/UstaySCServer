@@ -9,11 +9,6 @@ module.exports = (sequelize, DataTypes, Model) => {
             autoIncrement: true,
             primaryKey: true
         },
-        condition: {
-            type: DataTypes.STRING,
-            allowNull: false
-        },
-        
     },{
         tableName:'conditions',
         sequelize,

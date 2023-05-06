@@ -11,7 +11,7 @@ const sequelize = new Sequelize(
     host: dbConfig.HOST,
     dialect: dbConfig.DIALECT,
   },
-  dbConfig.TIMEZONE
+  dbConfig.timezone
 );
 
 // Create Connection
@@ -42,6 +42,7 @@ const FieldsModel = require('../models/model.fields');
 const ConditionModel = require('../models/model.condition');
 const WarehouseModel = require('../models/model.warehouse');
 const DeliveryTypeModel = require('../models/model.delivery_type');
+const SituationModel = require('../models/model.situation');
 
 // Create an empty Object
 const db = {};
@@ -62,6 +63,7 @@ db.FieldsModel = FieldsModel(sequelize, DataTypes, Model);
 db.ConditionModel = ConditionModel(sequelize, DataTypes, Model);
 db.WarehouseModel = WarehouseModel(sequelize, DataTypes, Model);
 db.DeliveryTypeModel = DeliveryTypeModel(sequelize, DataTypes, Model);
+db.SituationModel = SituationModel(sequelize, DataTypes, Model);
 
 /**************************************** Create a Relationship **************/
 
@@ -104,10 +106,12 @@ db.UserModel.hasMany(db.SMModel,{
 db.SMModel.belongsTo(db.UserModel);
 
 // Condition Model
+db.SituationModel.hasMany(db.ConditionModel);
+db.ConditionModel.belongsTo(db.SituationModel);
 db.STFModel.hasMany(db.ConditionModel);
 db.ConditionModel.belongsTo(db.STFModel);
 db.ProjectModel.hasMany(db.ConditionModel);
-db.ConditionModel.belongsTo(db.ProjectModel)
+db.ConditionModel.belongsTo(db.ProjectModel);
 
 // Warehouse Model
 db.SMModel.hasMany(db.WarehouseModel);

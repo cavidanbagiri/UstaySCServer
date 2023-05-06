@@ -6,5 +6,5 @@ module.exports = {
     PASSWORD:'Initial_123',
     HOST:'localhost',
     DIALECT:'postgres',
-    TIMEZONE: 'utc'
+    timezone:"+03:00"
 }
