@@ -7,7 +7,7 @@ const errorHandler = (err, req, res, next) => {
     }
 
     console.log('Error Handler From Middleware : ',err);
-    return res.status(500).send(err);
+    return res.status(400).send(err);
 }
 
 module.exports = errorHandler;

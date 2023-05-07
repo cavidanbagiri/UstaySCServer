@@ -108,6 +108,7 @@ db.SMModel.belongsTo(db.UserModel);
 // Condition Model
 db.SituationModel.hasMany(db.ConditionModel);
 db.ConditionModel.belongsTo(db.SituationModel);
+
 db.STFModel.hasMany(db.ConditionModel);
 db.ConditionModel.belongsTo(db.STFModel);
 db.ProjectModel.hasMany(db.ConditionModel);
