@@ -25,26 +25,32 @@ class OrderController {
     user_inform.id = req.query.id;
     user_inform.ProjectModelId = req.query.ProjectModelId;
     // Get Data From Service
-    await OrderService.showSTF(user_inform)
-      .then((respond) => {
-        return res.send(respond);
-      })
-      .catch((err) => {
-        console.log("Getting MTF Is Wrong");
-      });
+    tryCatch(
+      await OrderService.showSTF(user_inform)
+        .then((respond) => {
+          return res.send(respond);
+        })
+        .catch((err) => {
+          console.log('Getting Show STF Error : ',err);
+          next(err);
+        })
+    );
   }
 
   // Fetch Fields From Fields Model
   static async fetchField(req, res, next) {
     const ProjectModelId = req.params.projectmodelid;
     // const ProjectModelId = 1;
-    await OrderService.fetchField(ProjectModelId)
-      .then((respond) => {
-        return res.send(respond);
-      })
-      .catch((err) => {
-        console.log("Getting MTF Is Wrong");
-      });
+    tryCatch(
+      await OrderService.fetchField(ProjectModelId)
+        .then((respond) => {
+          return res.send(respond);
+        })
+        .catch((err) => {
+          console.log("Fetch Field Error");
+          next(err);
+        })
+    );
   }
 }
 
