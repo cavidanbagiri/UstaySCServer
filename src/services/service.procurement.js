@@ -12,13 +12,14 @@ class ProcurementService {
   // Fetch All SM
   static async getAllSm() {
     const string_query = `
-    SELECT sms.* , users.username, vendors.vendor_name, s.situation,
+    SELECT sms.* , users.username as orderer, vendors.vendor_name, s.situation,
     stfs.created_at, stfs.stf_num, stfs.material_name,
-    stfs.count, stfs.unit
+    stfs.count, stfs.unit, us.username
     FROM sms
     LEFT JOIN stfs ON sms."STFModelId"=stfs.id
     LEFT JOIN vendors ON sms."VendorModelId"=vendors.id
     LEFT JOIN users ON stfs."UserModelId"=users.id
+    left join users us on us.id=sms."supplierName"
     LEFT JOIN conditions c ON c."STFModelId"=stfs.id
     LEFT JOIN situations s ON c."SituationModelId"=s.id
     `

@@ -8,14 +8,15 @@ class WarehouseService {
     // Fetch Materials
     static async fetchWaitingSMS(){
 
-        const string_query = `
-            select u.username as orderer, sm.id as mainid, * from conditions c
-            left join stfs s on c."STFModelId"=s.id
-            left join sms sm on sm."STFModelId"=s.id
-            left join vendors vn on sm."VendorModelId"=vn.id
-            left join users u on u.id=s."UserModelId"
-            left join users us on us.id=sm."supplierName"
-            where c.condition='processing'
+        const string_query = `      
+        select stfs.*, users.username as orderer, sms.id as mainid, sms.sm_num, us.username, vn.vendor_name, situations.situation from conditions c
+        left join stfs on c."STFModelId"=stfs.id
+        left join sms on sms."STFModelId"=stfs.id
+        left join vendors vn on sms."VendorModelId"=vn.id
+        left join users on users.id=stfs."UserModelId"
+        left join users us on us.id=sms."supplierName"
+        LEFT JOIN situations ON c."SituationModelId" = situations.id
+        where c."SituationModelId"=2
         `
         const result = await db.sequelize.query(string_query);
         return result[0];
