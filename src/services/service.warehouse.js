@@ -9,7 +9,9 @@ class WarehouseService {
     static async fetchWaitingSMS(){
 
         const string_query = `      
-        select stfs.*, users.username as orderer, sms.id as mainid, sms.sm_num, us.username, vn.vendor_name, situations.situation from conditions c
+        select stfs.*, users.username as orderer, sms.id as mainid, sms.sm_num,
+        sms.price, sms.currency, us.username, vn.vendor_name, situations.situation
+        from conditions c
         left join stfs on c."STFModelId"=stfs.id
         left join sms on sms."STFModelId"=stfs.id
         left join vendors vn on sms."VendorModelId"=vn.id
