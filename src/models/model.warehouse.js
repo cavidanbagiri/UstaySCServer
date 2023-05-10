@@ -9,15 +9,13 @@ module.exports = (sequelize, DataTypes, Model) => {
             autoIncrement: true,
             primaryKey: true
         },
-        coming_date: {
-            allowNull: true,
-            type: DataTypes.DATE,
-            defaultValue: sequelize.literal("CURRENT_TIMESTAMP"),
+        delivery_amount: {
+            type: DataTypes.FLOAT,
+            allowNull: false,
         },
         delivery_date: {
             allowNull: true,
             type: DataTypes.DATE,
-            defaultValue: sequelize.literal("CURRENT_TIMESTAMP"),
         },
         doc_number: {
             type: DataTypes.STRING,
@@ -26,7 +24,6 @@ module.exports = (sequelize, DataTypes, Model) => {
         doc_date: {
             allowNull: true,
             type: DataTypes.DATE,
-            defaultValue: sequelize.literal("CURRENT_TIMESTAMP"),
         },
         passport: {
             type: DataTypes.BOOLEAN,

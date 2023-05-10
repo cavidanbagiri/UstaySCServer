@@ -123,17 +123,6 @@ db.UserModel.hasMany(db.WarehouseModel,{
 });
 db.WarehouseModel.belongsTo(db.UserModel);
 
-db.ConditionModel.hasMany(db.WarehouseModel);
-db.WarehouseModel.belongsTo(db.ConditionModel);
-
-db.UserModel.hasMany(db.WarehouseModel,{
-  foreignKey: 'deliveryTo'
-});
-db.WarehouseModel.belongsTo(db.UserModel);
-
-db.DeliveryTypeModel.hasMany(db.WarehouseModel);
-db.WarehouseModel.belongsTo(db.DeliveryTypeModel);
-
 db.ProjectModel.hasMany(db.WarehouseModel);
 db.WarehouseModel.belongsTo(db.ProjectModel);
 

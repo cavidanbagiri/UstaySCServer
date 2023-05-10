@@ -9,8 +9,11 @@ class WarehouseService {
     static async fetchWaitingSMS(){
 
         const string_query = `      
-        select stfs.*, users.username as orderer, sms.id as mainid, sms.sm_num,
-        sms.price, sms.currency, us.username, vn.vendor_name, situations.situation
+        select stfs.*, users.username as orderer, sms.id as mainid, 
+        sms.id as sms_id, sms.sm_num,
+        sms.price, sms.currency, 
+        us.username, vn.vendor_name, 
+        situations.situation
         from conditions c
         left join stfs on c."STFModelId"=stfs.id
         left join sms on sms."STFModelId"=stfs.id
@@ -27,18 +30,19 @@ class WarehouseService {
 
     // Post Accpeted Materials
     static async acceptWaitingSM(data){
-        delete data[0].id;
-        delete data[1].id;
-        data[0].passport=false;
-        data[0].certificate=false;
-        
-        data[1].passport=false;
-        data[1].certificate=false;
-        // console.log(data);
-        for(let i of data){
-            const temp = await WarehouseModel.create(
-                i
-            )
+        console.log('data : ',data);
+        for(let i = 0 ; i < data?.checked_values?.length; i ++ ){
+            const temp = await WarehouseModel.create({
+                delivery_amount:data.table_data[i].delivery_amount,
+                passport: data.table_data[i].passport,
+                certificate: data.table_data[i].certificate,
+                delivery_date: data.sms_data.delivery_date,
+                doc_number: data.sms_data.doc_number,
+                doc_date: data.sms_data.doc_date,
+                acceptedBy: data.user.id,
+                ProjectModelId: data.user.ProjectModelId,
+                SMModelId: data.checked_values[i].sms_id,
+            })
         }
         return 'OK';
     }

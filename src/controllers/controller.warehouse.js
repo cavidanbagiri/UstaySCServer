@@ -19,6 +19,7 @@ class WarehouseController {
   // Post Accpeted Materials
   static async acceptWaitingSM(req, res, next) {
     const data = req.body;
+    console.log('accept is working in server');
     tryCatch(
       await WarehouseService.acceptWaitingSM(data)
         .then((respond) => {
