@@ -42,12 +42,13 @@ class WarehouseService {
                 acceptedBy: data.user.id,
                 ProjectModelId: data.user.ProjectModelId,
                 SMModelId: data.checked_values[i].sms_id,
-            })
+            }).then(async (respond)=>{
+                let string_query = `
+                    update conditions set "SituationModelId"=3 where "STFModelId"=${data.checked_values[i].id}
+                `
+                const update_temp = await db.sequelize.query(string_query);
+            });
             
-            let string_query = `
-                update conditions set "SituationModelId"=3 where "STFModelId"=${data.checked_values[i].id}
-            `
-            const update_temp = await db.sequelize.query(string_query);
         }
         return 'OK';
     }
