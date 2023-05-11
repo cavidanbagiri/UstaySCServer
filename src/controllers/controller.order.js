@@ -52,6 +52,22 @@ class OrderController {
         })
     );
   }
+
+  // Get STF Statistics
+  static async getUserStaticSTFS(req, res, next) {
+    const user_id = req.params.userid;
+    console.log('user is : ',user_id) ;
+    tryCatch(
+      await OrderService.getUserStaticSTFS(user_id)
+      .then((respond)=>{
+        return res.send(respond);
+      }).catch((err)=>{
+        console.log('Get Statistics Error is : ',err);
+        next(err);
+      })
+    )
+  }
+
 }
 
 module.exports = OrderController;

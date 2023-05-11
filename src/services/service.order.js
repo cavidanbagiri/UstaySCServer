@@ -85,13 +85,13 @@ class OrderService {
     const project_id = userData.ProjectModelId;
 
     const string_query = `
-    SELECT stfs.*, users.username, fields.field_name, situations.situation FROM stfs
-    LEFT JOIN users ON stfs."UserModelId"=users.id
-    LEFT JOIN fields ON fields.id=stfs."FieldsModelId"
-    LEFT JOIN conditions cond ON cond."STFModelId" = stfs.id
-    LEFT JOIN situations ON situations.id=cond."SituationModelId"
-    WHERE stfs."UserModelId"=${user_id} AND stfs."ProjectModelId"=${project_id}
-    ORDER BY stfs.stf_num DESC
+      SELECT stfs.*, users.username, fields.field_name, situations.situation FROM stfs
+      LEFT JOIN users ON stfs."UserModelId"=users.id
+      LEFT JOIN fields ON fields.id=stfs."FieldsModelId"
+      LEFT JOIN conditions cond ON cond."STFModelId" = stfs.id
+      LEFT JOIN situations ON situations.id=cond."SituationModelId"
+      WHERE stfs."UserModelId"=${user_id} AND stfs."ProjectModelId"=${project_id}
+      ORDER BY stfs.stf_num DESC
     `
 
     const result = await db.sequelize.query(string_query);
@@ -104,6 +104,20 @@ class OrderService {
     const string_query = `select id, field_name from fields where "ProjectModelId" = ${ProjectModelId} `;
     const fields = await db.sequelize.query(string_query);
     return fields[0];
+  }
+
+
+  // Get STF Statistics
+  static async getUserStaticSTFS(user_id) {
+    
+    const result = await db.sequelize.query(`
+    select "SituationModelId", COUNT("SituationModelId") from conditions 
+    where "STFModelId" IN ( select id from stfs where "UserModelId" = ${user_id} )
+    GROUP BY "SituationModelId"
+    ORDER BY "SituationModelId"
+  ` );
+    console.log(result[0]);
+    return result[0];
   }
 }
 
