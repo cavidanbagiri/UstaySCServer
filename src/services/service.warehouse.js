@@ -26,11 +26,11 @@ class WarehouseService {
         const result = await db.sequelize.query(string_query);
         return result[0];
 
-    }
+    }                                                        
 
     // Post Accpeted Materials
     static async acceptWaitingSM(data){
-        console.log('data : ',data);
+        console.log('data : ',data);                          
         for(let i = 0 ; i < data?.checked_values?.length; i ++ ){
             const temp = await WarehouseModel.create({
                 delivery_amount:data.table_data[i].delivery_amount,
@@ -43,6 +43,11 @@ class WarehouseService {
                 ProjectModelId: data.user.ProjectModelId,
                 SMModelId: data.checked_values[i].sms_id,
             })
+            
+            let string_query = `
+                update conditions set "SituationModelId"=3 where "STFModelId"=${data.checked_values[i].id}
+            `
+            const update_temp = await db.sequelize.query(string_query);
         }
         return 'OK';
     }
