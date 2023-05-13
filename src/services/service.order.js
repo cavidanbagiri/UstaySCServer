@@ -3,9 +3,9 @@ const db = require("../models");
 const STFModel = db.STFModel;
 const FieldsModel = db.FieldsModel;
 const ConditionModel = db.ConditionModel;
+const STFSNumsModel = db.STFSNumsModel;
 
 class OrderService {
-  
   // Check Sending Data Length
   static async checkData(order_data) {
     let count = 0;
@@ -22,61 +22,59 @@ class OrderService {
     return count;
   }
 
-  // Create a MTF form
+  static async getLastNumFromSTFSNums() {
+    const string_query =
+      'insert into stfsnums(stfnum, "createdAt", "updatedAt") values( 1+ (select stfnum from stfsnums order by stfsnums desc limit 1), current_timestamp, current_timestamp ) returning stfnum ';
+    const result = await db.sequelize.query(string_query);
+    return result[0][0].stfnum;
+  }
+
   static async createStf(data) {
+    // Take User Inform from data
     const user_data = data.user;
+    // Take Order Data from data
     const order_data = data.orders;
-    let stf_num = 0;
-    let return_data = "";
-    // Check How Many true orders have
+
+    // Create stfsnums just one time and get stfs nums
+    let stf_num = await this.getLastNumFromSTFSNums();
+
+    // Get Project Model Id Name + stfnum for inserting stf table
+    switch (user_data.ProjectModelId) {
+      case 1:
+        stf_num = `SRU.RS21.${stf_num}`;
+    }
+
+    // Check How Many true order row have
     const order_length = await this.checkData(order_data);
-    // If True order length is zero return Error else continue
+
+    // If Order Length is 0 throw Error Else Create STF
     if (order_length === 0) {
       throw new Error("MTF Cant Create first");
     } else {
-      // Loop Will Work true length of orders;
       for (let i = 0; i < order_length; i++) {
-          order_data[i].UserModelId = user_data.id;
-          order_data[i].ProjectModelId = user_data.ProjectModelId;
-          order_data[i].DepartmentModelId = user_data.DepartmentModelId;
-          if (i === 0) {
-            const creating_data = await STFModel.create(order_data[i]);
-            if (creating_data.id) {
-              let counting = creating_data.id + 1000;
-              // Check project for prefix
-              switch (user_data.ProjectModelId) {
-                case 1:
-                  stf_num = `SRU.RS21.${counting}`;
-                  break;
-              }
-              return_data = await db.sequelize.query(
-                `update stfs set stf_num = '${stf_num}' where id=${creating_data.id}`
-              );
-              const adding_conditions = await ConditionModel.create({
-                SituationModelId: 1,
-                STFModelId: creating_data.id,
-                ProjectModelId: creating_data.ProjectModelId,
-              });
-              continue;
-            }
-          }
-          order_data[i].stf_num = stf_num;
-          const creating_data = await STFModel.create(order_data[i]);
+        order_data[i].UserModelId = user_data.id;
+        order_data[i].ProjectModelId = user_data.ProjectModelId;
+        order_data[i].DepartmentModelId = user_data.DepartmentModelId;
+        order_data[i].stf_num = stf_num;
+        const creating_data = await STFModel.create(order_data[i])
+        .then(async (respond)=>{
+          console.log('respond is : ',respond);
           const adding_conditions = await ConditionModel.create({
             SituationModelId: 1,
-            STFModelId: creating_data.id,
-            ProjectModelId: creating_data.ProjectModelId,
+            STFModelId: respond.dataValues.id,
+            ProjectModelId: respond.dataValues.ProjectModelId,
           });
-      }
-      // Check and Fetch Creating MTF and send Client Side
-      if (stf_num === 0) {
-        throw new Error("MTF Cant Create For STF NUM ");
-      } else {
-        const string_query = `SELECT stfs.*, u.username FROM stfs LEFT JOIN users u on stfs."UserModelId"=u.id where stf_num = '${stf_num}'`;
-        const result_data = await db.sequelize.query(string_query);
-        return result_data[0];
+        }).catch((err)=>{
+          console.log('Error Happen inside of Create STFTemp : ',err);
+          throw new Error(err);
+        })
       }
     }
+
+    // Return Creating STF
+    const returning_result = `select * from stfs where stf_num=${stf_num}`;
+    return returning_result[0];
+
   }
 
   // Show User MTF
@@ -92,7 +90,7 @@ class OrderService {
       LEFT JOIN situations ON situations.id=cond."SituationModelId"
       WHERE stfs."UserModelId"=${user_id} AND stfs."ProjectModelId"=${project_id}
       ORDER BY stfs.stf_num DESC
-    `
+    `;
 
     const result = await db.sequelize.query(string_query);
 
@@ -106,16 +104,14 @@ class OrderService {
     return fields[0];
   }
 
-
   // Get STF Statistics
   static async getUserStaticSTFS(user_id) {
-    
     const result = await db.sequelize.query(`
     select "SituationModelId", COUNT("SituationModelId") from conditions 
     where "STFModelId" IN ( select id from stfs where "UserModelId" = ${user_id} )
     GROUP BY "SituationModelId"
     ORDER BY "SituationModelId"
-  ` );
+  `);
     console.log(result[0]);
     return result[0];
   }

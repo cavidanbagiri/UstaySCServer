@@ -43,6 +43,7 @@ const ConditionModel = require('../models/model.condition');
 const WarehouseModel = require('../models/model.warehouse');
 const DeliveryTypeModel = require('../models/model.delivery_type');
 const SituationModel = require('../models/model.situation');
+const STFSNumsModel = require('../models/model.stfsnums');
 
 // Create an empty Object
 const db = {};
@@ -64,6 +65,7 @@ db.ConditionModel = ConditionModel(sequelize, DataTypes, Model);
 db.WarehouseModel = WarehouseModel(sequelize, DataTypes, Model);
 db.DeliveryTypeModel = DeliveryTypeModel(sequelize, DataTypes, Model);
 db.SituationModel = SituationModel(sequelize, DataTypes, Model);
+db.STFSNumsModel = STFSNumsModel(sequelize, DataTypes, Model);
 
 /**************************************** Create a Relationship **************/
 
@@ -90,6 +92,10 @@ db.DepartmentModel.hasMany(db.STFModel);
 db.STFModel.belongsTo(db.DepartmentModel);
 db.FieldsModel.hasMany(db.STFModel);
 db.STFModel.belongsTo(db.FieldsModel);
+// db.STFSNumsModel.hasMany(db.STFModel);
+// db.STFModel.belongsTo(db.STFSNumsModel,{
+//   foreignKey: 'stf_num'
+// });
 
 // SM Model Relationship
 db.ProjectModel.hasMany(db.SMModel);
