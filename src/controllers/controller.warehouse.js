@@ -32,6 +32,24 @@ class WarehouseController {
         })
     );
   }
+
+  // Fetch Received Sm
+  static async fetchReceivedSM(req, res, next) { 
+
+    tryCatch(
+      await WarehouseService.fetchReceivedSM()
+      .then((respond) => {
+        console.log("res is : ", respond);
+        res.status(200).send(respond);
+      })
+      .catch((err) => {
+        console.log("Warehouse Received Materials Error : ", err);
+        next(err);
+      })
+    )
+
+  }
+
 }
 
 module.exports = WarehouseController;
