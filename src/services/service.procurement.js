@@ -22,7 +22,7 @@ class ProcurementService {
     left join users us on us.id=sms."supplierName"
     LEFT JOIN conditions c ON c."STFModelId"=stfs.id
     LEFT JOIN situations s ON c."SituationModelId"=s.id
-    `
+    `;
 
     const result = await db.sequelize.query(string_query);
     console.log("sm result : ", result[0]);
@@ -31,7 +31,6 @@ class ProcurementService {
 
   // Get Waiting STF From STF Tables
   static async getWaitingSTF() {
-
     const string_query = `
         SELECT stfs.*, users.username, fields.field_name, situations.situation FROM stfs
         LEFT JOIN users ON stfs."UserModelId"=users.id
@@ -93,6 +92,38 @@ class ProcurementService {
     let string_query =
       'select id, username from users where "StatusModelId"=2 ';
     const result = await db.sequelize.query(string_query);
+    return result[0];
+  }
+
+  // Fetch Processing
+  static async fetchProcessingSM(req, res, next) {
+    const string_query = `
+      SELECT stfs.*, users.username, fields.field_name, situations.situation FROM stfs
+      LEFT JOIN users ON stfs."UserModelId"=users.id
+      LEFT JOIN fields ON fields.id=stfs."FieldsModelId"
+      LEFT JOIN conditions cond ON cond."STFModelId" = stfs.id
+      LEFT JOIN situations ON situations.id=cond."SituationModelId"
+      WHERE situations.situation='Processing'
+      ORDER BY stfs.stf_num DESC
+    `;
+    const result = await db.sequelize.query(string_query);
+    console.log("result is : ", result[0]);
+    return result[0];
+  }
+
+  // Fetch Receiving
+  static async fetchReceivingSM(req, res, next) {
+    const string_query = `
+      SELECT stfs.*, users.username, fields.field_name, situations.situation FROM stfs
+      LEFT JOIN users ON stfs."UserModelId"=users.id
+      LEFT JOIN fields ON fields.id=stfs."FieldsModelId"
+      LEFT JOIN conditions cond ON cond."STFModelId" = stfs.id
+      LEFT JOIN situations ON situations.id=cond."SituationModelId"
+      WHERE situations.situation='Received'
+      ORDER BY stfs.stf_num DESC
+    `;
+    const result = await db.sequelize.query(string_query);
+    console.log("result is : ", result[0]);
     return result[0];
   }
 }

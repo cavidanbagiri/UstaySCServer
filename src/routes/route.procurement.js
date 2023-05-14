@@ -9,6 +9,8 @@ const router  = express.Router();
 router.get('/', ProcurementController.getAllSm);
 
 router.get('/waitingmtf', ProcurementController.getWaitingSTF);
+router.get('/processing', ProcurementController.fetchProcessingSM);
+router.get('/receiving', ProcurementController.fetchReceivingSM);
 router.post('/createstf', ProcurementController.createSm);
 
 router.get('/companies', ProcurementController.fetchCompaniesNames);

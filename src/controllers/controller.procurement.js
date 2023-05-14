@@ -75,6 +75,36 @@ class ProcurementController {
         })
     );
   }
+
+  // Fetch Processing
+  static async fetchProcessingSM(req, res, next){
+    tryCatch(
+      await ProcurementService.fetchProcessingSM()
+      .then((respond) => {
+        res.send(respond);
+      })
+      .catch((err) => {
+        console.log("Fetch Processing Names Error Happen : ", err);
+        next(err);
+      })
+    )
+  }
+
+  // Fetch Receiving
+  static async fetchReceivingSM(req, res, next){
+    tryCatch(
+      await ProcurementService.fetchReceivingSM()
+      .then((respond) => {
+        res.send(respond);
+      })
+      .catch((err) => {
+        console.log("Fetch Receiving Names Error Happen : ", err);
+        next(err);
+      })
+    )
+  }
+
+
 }
 
 module.exports = ProcurementController;
