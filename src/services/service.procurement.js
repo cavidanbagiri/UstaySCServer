@@ -5,6 +5,7 @@ const moment = require("moment");
 
 const STFModel = db.STFModel;
 const SMModel = db.SMModel;
+const SMSNumsModel = db.SMSNumsModel;
 
 const ConditionModel = db.ConditionModel;
 
@@ -44,40 +45,76 @@ class ProcurementService {
     return result[0];
   }
 
+  // Create Firstly SMS Num
+  static async getLastNumFromSMSnums() {
+    const string_query =
+      'insert into smsnums(smnum, "createdAt", "updatedAt") values( 1+ (select smnum from smsnums order by smnum desc limit 1), current_timestamp, current_timestamp ) returning smnum ';
+    const result = await db.sequelize.query(string_query);
+    return result[0][0].smnum;
+  }
+
   // Create an sm
   static async createSm(data) {
-    let sm_num = "";
-    let returning_data = "";
+    console.log('data is : ',data);
     for (let i = 0; i < data.length; i++) {
-      data[i].procurement_coming_date = moment(
-        data[i].procurement_coming_date
-      ).format("YYYY-MM-DD");
-      if (i === 0) {
-        const creating_data = await SMModel.create(data[i]);
-        if (creating_data.id) {
-          let counting = creating_data.id + 1000;
-          switch (data[i].ProjectModelId) {
-            case 1:
-              sm_num = `SRU.RS21.${counting}`;
-              break;
-          }
-          returning_data = await db.sequelize.query(
-            `update sms set sm_num = '${sm_num}' where id=${creating_data.id}`
-          );
-          const temp = await db.sequelize.query(
-            `update conditions set "SituationModelId"=2 where "STFModelId"=${data[i].STFModelId} `
-          );
-          continue;
-        }
+      // If There is a Data
+      if (data[i].procurement_coming_date != '') {
+        data[i].procurement_coming_date = moment(
+          data[i].procurement_coming_date
+        ).format("YYYY-MM-DD");
       }
-      data[i].sm_num = sm_num;
-      const temp = await SMModel.create(data[i]);
-      const ttemp = await db.sequelize.query(
+      else{
+        data[i].procurement_coming_date = null;
+      }
+      // Get Last Number From Sm Num
+      const sm_num = this.getLastNumFromSMSnums();
+      // Create sn_num form
+      switch (data[i].ProjectModelId) {
+        case 1:
+          data[i].sm_num = `SRU.RS21.SM.${sm_num}`;
+          break;
+      }
+      // Update Conditions set SitutationModelId with Processing
+      const update_situations = await db.sequelize.query(
         `update conditions set "SituationModelId"=2 where "STFModelId"=${data[i].STFModelId} `
       );
+
+      const temp = await SMModel.create(data[i]);
+
     }
 
-    return "OK";
+    // let sm_num = "";
+    // let returning_data = "";
+    // for (let i = 0; i < data.length; i++) {
+    //   data[i].procurement_coming_date = moment(
+    //     data[i].procurement_coming_date
+    //   ).format("YYYY-MM-DD");
+    //   if (i === 0) {
+    //     const creating_data = await SMModel.create(data[i]);
+    //     if (creating_data.id) {
+    //       let counting = creating_data.id + 1000;
+    //       switch (data[i].ProjectModelId) {
+    //         case 1:
+    //           sm_num = `SRU.RS21.${counting}`;
+    //           break;
+    //       }
+    //       returning_data = await db.sequelize.query(
+    //         `update sms set sm_num = '${sm_num}' where id=${creating_data.id}`
+    //       );
+    //       const temp = await db.sequelize.query(
+    //         `update conditions set "SituationModelId"=2 where "STFModelId"=${data[i].STFModelId} `
+    //       );
+    //       continue;
+    //     }
+    //   }
+    //   data[i].sm_num = sm_num;
+    //   const temp = await SMModel.create(data[i]);
+    //   const ttemp = await db.sequelize.query(
+    //     `update conditions set "SituationModelId"=2 where "STFModelId"=${data[i].STFModelId} `
+    //   );
+    // }
+
+    // return "OK";
   }
 
   // Fetch Companies Names

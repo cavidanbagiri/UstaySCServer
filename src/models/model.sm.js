@@ -16,6 +16,7 @@ module.exports = (sequelize, DataTypes, Model) => {
         },
         procurement_coming_date : {
             type: DataTypes.DATEONLY,
+            allowNull: true
         },
         price : {
             type: DataTypes.FLOAT,

@@ -44,6 +44,7 @@ const WarehouseModel = require('../models/model.warehouse');
 const DeliveryTypeModel = require('../models/model.delivery_type');
 const SituationModel = require('../models/model.situation');
 const STFSNumsModel = require('../models/model.stfsnums');
+const SMSNumsModel = require('../models/model.smsnums');
 
 // Create an empty Object
 const db = {};
@@ -66,6 +67,7 @@ db.WarehouseModel = WarehouseModel(sequelize, DataTypes, Model);
 db.DeliveryTypeModel = DeliveryTypeModel(sequelize, DataTypes, Model);
 db.SituationModel = SituationModel(sequelize, DataTypes, Model);
 db.STFSNumsModel = STFSNumsModel(sequelize, DataTypes, Model);
+db.SMSNumsModel = SMSNumsModel(sequelize, DataTypes, Model);
 
 /**************************************** Create a Relationship **************/
 
