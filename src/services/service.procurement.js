@@ -83,38 +83,7 @@ class ProcurementService {
 
     }
 
-    // let sm_num = "";
-    // let returning_data = "";
-    // for (let i = 0; i < data.length; i++) {
-    //   data[i].procurement_coming_date = moment(
-    //     data[i].procurement_coming_date
-    //   ).format("YYYY-MM-DD");
-    //   if (i === 0) {
-    //     const creating_data = await SMModel.create(data[i]);
-    //     if (creating_data.id) {
-    //       let counting = creating_data.id + 1000;
-    //       switch (data[i].ProjectModelId) {
-    //         case 1:
-    //           sm_num = `SRU.RS21.${counting}`;
-    //           break;
-    //       }
-    //       returning_data = await db.sequelize.query(
-    //         `update sms set sm_num = '${sm_num}' where id=${creating_data.id}`
-    //       );
-    //       const temp = await db.sequelize.query(
-    //         `update conditions set "SituationModelId"=2 where "STFModelId"=${data[i].STFModelId} `
-    //       );
-    //       continue;
-    //     }
-    //   }
-    //   data[i].sm_num = sm_num;
-    //   const temp = await SMModel.create(data[i]);
-    //   const ttemp = await db.sequelize.query(
-    //     `update conditions set "SituationModelId"=2 where "STFModelId"=${data[i].STFModelId} `
-    //   );
-    // }
-
-    // return "OK";
+    return "OK";
   }
 
   // Fetch Companies Names
