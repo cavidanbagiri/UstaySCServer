@@ -50,12 +50,14 @@ class ProcurementService {
     const string_query =
       'insert into smsnums(smnum, "createdAt", "updatedAt") values( 1+ (select smnum from smsnums order by smnum desc limit 1), current_timestamp, current_timestamp ) returning smnum ';
     const result = await db.sequelize.query(string_query);
+    console.log('sm_num : ',result[0][0].snnum);
     return result[0][0].smnum;
   }
 
   // Create an sm
   static async createSm(data) {
-    console.log('data is : ',data);
+    // Get Last Number From Sm Num
+    const sm_num = await this.getLastNumFromSMSnums();
     for (let i = 0; i < data.length; i++) {
       // If There is a Data
       if (data[i].procurement_coming_date != '') {
@@ -66,8 +68,6 @@ class ProcurementService {
       else{
         data[i].procurement_coming_date = null;
       }
-      // Get Last Number From Sm Num
-      const sm_num = this.getLastNumFromSMSnums();
       // Create sn_num form
       switch (data[i].ProjectModelId) {
         case 1:

@@ -30,6 +30,7 @@ class OrderService {
   }
 
   static async createStf(data) {
+    console.log('Enter created method');
     // Take User Inform from data
     const user_data = data.user;
     // Take Order Data from data
@@ -58,7 +59,6 @@ class OrderService {
         order_data[i].stf_num = stf_num;
         const creating_data = await STFModel.create(order_data[i])
         .then(async (respond)=>{
-          console.log('respond is : ',respond);
           const adding_conditions = await ConditionModel.create({
             SituationModelId: 1,
             STFModelId: respond.dataValues.id,
@@ -70,9 +70,8 @@ class OrderService {
         })
       }
     }
-
-    // Return Creating STF
-    const returning_result = `select * from stfs where stf_num=${stf_num}`;
+    const returning_result = await db.sequelize.query(`select * from stfs where stf_num='${stf_num}'`);
+    console.log('result is : ',returning_result);
     return returning_result[0];
 
   }
