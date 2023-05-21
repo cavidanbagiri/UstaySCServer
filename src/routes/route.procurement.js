@@ -4,13 +4,17 @@ const ProcurementController = require("../controllers/controller.procurement");
 
 const router  = express.Router();
 
+// Get All STF
+router.get('/allstf', ProcurementController.fetchAllSTF);
+// Get STF Statistics Result
+router.get('/stfstatisticsresult', ProcurementController.getSTFStatisticsResult);
+// Get STF Statistic Result Data
+router.get('/getstatisticresult', ProcurementController.fetchStatisticResultData);
+
 
 // Get All SM
 router.get('/', ProcurementController.getAllSm);
 
-router.get('/waitingmtf', ProcurementController.getWaitingSTF);
-router.get('/processing', ProcurementController.fetchProcessingSM);
-router.get('/receiving', ProcurementController.fetchReceivingSM);
 router.post('/createstf', ProcurementController.createSm);
 
 router.get('/companies', ProcurementController.fetchCompaniesNames);

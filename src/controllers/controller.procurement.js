@@ -3,6 +3,48 @@ const ProcurementService = require("../services/service.procurement");
 const tryCatch = require("../utils/trycatch");
 
 class ProcurementController {
+
+  // Fetch STF Statistic Result
+  static async getSTFStatisticsResult(req, res, next){
+    tryCatch(
+      await ProcurementService.getSTFStatisticsResult()
+      .then((respond) => {
+        res.send(respond);
+      })
+      .catch((err) => {
+        console.log("Get STF Statistics Result Error : ", err);
+      })
+    )
+  }
+
+  // Fetch All STF
+  static async fetchAllSTF(req, res, next) {
+    tryCatch(
+      await ProcurementService.fetchAllSTF()
+      .then((respond) => {
+        res.send(respond);
+      })
+      .catch((err) => {
+        console.log("Get All STF Error : ", err);
+      })
+    )
+  }
+
+  // Fetch Statistics Result Data
+  static async fetchStatisticResultData(req, res, next){
+    const result_value = req.query.result_value_id;
+    tryCatch(
+      await ProcurementService.fetchStatisticResultData(result_value)
+      .then((respond) => {
+        res.send(respond);
+      })
+      .catch((err) => {
+        console.log("Get All STF Error : ", err);
+      })
+
+    )
+  }
+
   // Getch All SM
   static async getAllSm(req, res, next) {
     tryCatch(
@@ -76,33 +118,6 @@ class ProcurementController {
     );
   }
 
-  // Fetch Processing
-  static async fetchProcessingSM(req, res, next){
-    tryCatch(
-      await ProcurementService.fetchProcessingSM()
-      .then((respond) => {
-        res.send(respond);
-      })
-      .catch((err) => {
-        console.log("Fetch Processing Names Error Happen : ", err);
-        next(err);
-      })
-    )
-  }
-
-  // Fetch Receiving
-  static async fetchReceivingSM(req, res, next){
-    tryCatch(
-      await ProcurementService.fetchReceivingSM()
-      .then((respond) => {
-        res.send(respond);
-      })
-      .catch((err) => {
-        console.log("Fetch Receiving Names Error Happen : ", err);
-        next(err);
-      })
-    )
-  }
 
 
 }

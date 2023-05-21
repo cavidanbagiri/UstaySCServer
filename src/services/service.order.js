@@ -111,7 +111,6 @@ class OrderService {
     GROUP BY "SituationModelId"
     ORDER BY "SituationModelId"
   `);
-    console.log(result[0]);
     return result[0];
   }
 

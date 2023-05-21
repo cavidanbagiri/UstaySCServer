@@ -10,6 +10,54 @@ const SMSNumsModel = db.SMSNumsModel;
 const ConditionModel = db.ConditionModel;
 
 class ProcurementService {
+
+  // Fetch STF Statistic Result
+  static async getSTFStatisticsResult(){
+
+    const result = await db.sequelize.query(`
+      select "SituationModelId", COUNT("SituationModelId") from conditions 
+      GROUP BY "SituationModelId"
+      ORDER BY "SituationModelId"
+    `);
+    return result[0];
+  }
+
+  static async fetchAllSTF() {
+
+
+    // Fetch All STF
+    const string_query = `
+    SELECT situations.situation,
+    stfs.stf_num, stfs.created_at, stfs.material_name, stfs.count, stfs.unit,
+    users.username
+    FROM conditions
+    LEFT JOIN situations ON conditions."SituationModelId"=situations.id
+    LEFT JOIN stfs ON conditions."STFModelId"=stfs.id
+    LEFT JOIN users ON stfs."UserModelId"=users.id   
+    `
+    const result = await db.sequelize.query(string_query);
+    return result[0];
+  }
+
+  static async fetchStatisticResultData (result_value_id) {
+
+    const string_query = `
+    SELECT situations.situation,
+    stfs.stf_num, stfs.created_at, stfs.material_name, stfs.count, stfs.unit,
+    users.username
+    FROM conditions
+    LEFT JOIN situations ON conditions."SituationModelId"=situations.id
+    LEFT JOIN stfs ON conditions."STFModelId"=stfs.id
+    LEFT JOIN users ON stfs."UserModelId"=users.id   
+    where conditions."SituationModelId"=${result_value_id}
+    `
+
+    const result = await db.sequelize.query(string_query);
+
+    return result[0];
+  }
+
+
   // Fetch All SM
   static async getAllSm() {
     const string_query = `
@@ -101,37 +149,7 @@ class ProcurementService {
     return result[0];
   }
 
-  // Fetch Processing
-  static async fetchProcessingSM(req, res, next) {
-    const string_query = `
-      SELECT stfs.*, users.username, fields.field_name, situations.situation FROM stfs
-      LEFT JOIN users ON stfs."UserModelId"=users.id
-      LEFT JOIN fields ON fields.id=stfs."FieldsModelId"
-      LEFT JOIN conditions cond ON cond."STFModelId" = stfs.id
-      LEFT JOIN situations ON situations.id=cond."SituationModelId"
-      WHERE situations.situation='Processing'
-      ORDER BY stfs.stf_num DESC
-    `;
-    const result = await db.sequelize.query(string_query);
-    console.log("result is : ", result[0]);
-    return result[0];
-  }
-
-  // Fetch Receiving
-  static async fetchReceivingSM(req, res, next) {
-    const string_query = `
-      SELECT stfs.*, users.username, fields.field_name, situations.situation FROM stfs
-      LEFT JOIN users ON stfs."UserModelId"=users.id
-      LEFT JOIN fields ON fields.id=stfs."FieldsModelId"
-      LEFT JOIN conditions cond ON cond."STFModelId" = stfs.id
-      LEFT JOIN situations ON situations.id=cond."SituationModelId"
-      WHERE situations.situation='Received'
-      ORDER BY stfs.stf_num DESC
-    `;
-    const result = await db.sequelize.query(string_query);
-    console.log("result is : ", result[0]);
-    return result[0];
-  }
+ 
 }
 
 module.exports = ProcurementService;
