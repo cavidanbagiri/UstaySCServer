@@ -68,6 +68,27 @@ class OrderController {
     )
   }
 
+  // Fetch Statistic Data For Each User
+  static async fetchStatisticResultData(req, res, next) {
+    const data = {
+      user_id : req.query.user_id,
+      result_value : req.query.result_value_id
+    }
+
+    tryCatch(
+      await OrderService.fetchStatisticResultData(data)
+      .then((respond)=>{
+        return res.send(respond);
+      }).catch((err)=>{
+        console.log('Get Statistics Data Error is : ',err);
+        next(err);
+      })
+    )
+
+    // const user
+
+  }
+
 }
 
 module.exports = OrderController;

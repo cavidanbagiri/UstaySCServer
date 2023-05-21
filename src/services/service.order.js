@@ -1,9 +1,7 @@
 const db = require("../models");
 
 const STFModel = db.STFModel;
-const FieldsModel = db.FieldsModel;
 const ConditionModel = db.ConditionModel;
-const STFSNumsModel = db.STFSNumsModel;
 
 class OrderService {
   // Check Sending Data Length
@@ -82,8 +80,10 @@ class OrderService {
     const project_id = userData.ProjectModelId;
 
     const string_query = `
-      SELECT stfs.*, users.username, fields.field_name, situations.situation FROM stfs
-      LEFT JOIN users ON stfs."UserModelId"=users.id
+      SELECT stfs.stf_num, stfs.material_type, stfs.material_name, stfs.count, stfs.created_at,stfs.unit,
+      fields.field_name,
+      situations.situation
+      FROM stfs
       LEFT JOIN fields ON fields.id=stfs."FieldsModelId"
       LEFT JOIN conditions cond ON cond."STFModelId" = stfs.id
       LEFT JOIN situations ON situations.id=cond."SituationModelId"
@@ -114,6 +114,30 @@ class OrderService {
     console.log(result[0]);
     return result[0];
   }
+
+  // Fetch Statistic Data For Each User
+  static async fetchStatisticResultData (data) {
+    const string_query = `
+
+
+    SELECT stfs.stf_num, stfs.material_type, stfs.material_name, stfs.count, stfs.created_at,stfs.unit,
+      fields.field_name,
+      situations.situation
+      FROM stfs
+      LEFT JOIN fields ON fields.id=stfs."FieldsModelId"
+      LEFT JOIN conditions cond ON cond."STFModelId" = stfs.id
+      LEFT JOIN situations ON situations.id=cond."SituationModelId"
+      WHERE stfs."UserModelId"=${data.user_id} AND cond."SituationModelId"=${data.result_value}
+      ORDER BY stfs.stf_num DESC
+
+    `
+
+    const result = await db.sequelize.query(string_query);
+
+    return result[0];
+
+  }
+
 }
 
 module.exports = OrderService;
