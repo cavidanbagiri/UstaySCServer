@@ -45,6 +45,7 @@ const DeliveryTypeModel = require('../models/model.delivery_type');
 const SituationModel = require('../models/model.situation');
 const STFSNumsModel = require('../models/model.stfsnums');
 const SMSNumsModel = require('../models/model.smsnums');
+const WorkManagementModel = require('../models/model.workmanagements');
 
 // Create an empty Object
 const db = {};
@@ -68,6 +69,7 @@ db.DeliveryTypeModel = DeliveryTypeModel(sequelize, DataTypes, Model);
 db.SituationModel = SituationModel(sequelize, DataTypes, Model);
 db.STFSNumsModel = STFSNumsModel(sequelize, DataTypes, Model);
 db.SMSNumsModel = SMSNumsModel(sequelize, DataTypes, Model);
+db.WorkManagementModel = WorkManagementModel(sequelize, DataTypes, Model);
 
 /**************************************** Create a Relationship **************/
 
@@ -94,10 +96,7 @@ db.DepartmentModel.hasMany(db.STFModel);
 db.STFModel.belongsTo(db.DepartmentModel);
 db.FieldsModel.hasMany(db.STFModel);
 db.STFModel.belongsTo(db.FieldsModel);
-// db.STFSNumsModel.hasMany(db.STFModel);
-// db.STFModel.belongsTo(db.STFSNumsModel,{
-//   foreignKey: 'stf_num'
-// });
+
 
 // SM Model Relationship
 db.ProjectModel.hasMany(db.SMModel);
@@ -133,6 +132,11 @@ db.WarehouseModel.belongsTo(db.UserModel);
 
 db.ProjectModel.hasMany(db.WarehouseModel);
 db.WarehouseModel.belongsTo(db.ProjectModel);
+
+
+// Work Management Model
+db.UserModel.hasMany(db.WorkManagementModel);
+db.WorkManagementModel.belongsTo(db.UserModel);
 
 // Sync Database
 // db.sequelize

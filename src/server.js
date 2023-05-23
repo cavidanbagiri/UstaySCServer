@@ -10,19 +10,22 @@ const errorHandler = require('./middleware/errorHandler');
 require('./models');
 
 // Import Routes
-const { OrderRoutes, UserRoutes, ProcurementRoutes, WarehouseRouter } = require('./routes');
+const { OrderRoutes, UserRoutes, ProcurementRoutes, WarehouseRouter, WorkSpaceRouter } = require('./routes');
 
-
-
+// Can Use req.body
 app.use(express.json());  
 
+// Using Cors Policy
 app.use(cors())
 
+// Get Creating Routes
 app.use('/user', UserRoutes);
 app.use('/order', OrderRoutes);
 app.use('/procurement', ProcurementRoutes);
 app.use('/warehouse', WarehouseRouter);
+app.use('/workspace', WorkSpaceRouter)
 
+// Handle Error
 app.use(errorHandler);
 
 app.listen(3000,()=>{
