@@ -7,7 +7,8 @@ class ProcurementController {
   // Fetch STF Statistic Result
   static async getSTFStatisticsResult(req, res, next){
     tryCatch(
-      await ProcurementService.getSTFStatisticsResult()
+      // await ProcurementService.getSTFStatisticsResult()
+      await ProcurementService.getSTFProcurementService().getSTFStatisticsResult()
       .then((respond) => {
         res.send(respond);
       })
@@ -20,7 +21,7 @@ class ProcurementController {
   // Fetch All STF
   static async fetchAllSTF(req, res, next) {
     tryCatch(
-      await ProcurementService.fetchAllSTF()
+      await ProcurementService.getSTFProcurementService().fetchAllSTF()
       .then((respond) => {
         res.send(respond);
       })
@@ -34,7 +35,7 @@ class ProcurementController {
   static async fetchStatisticResultData(req, res, next){
     const result_value = req.query.result_value_id;
     tryCatch(
-      await ProcurementService.fetchStatisticResultData(result_value)
+      await ProcurementService.getSTFProcurementService().fetchStatisticResultData(result_value)
       .then((respond) => {
         res.send(respond);
       })
@@ -48,7 +49,7 @@ class ProcurementController {
   // Getch All SM
   static async getAllSm(req, res, next) {
     tryCatch(
-      await ProcurementService.getAllSm()
+      await ProcurementService.getSMProcurementService().getAllSm()
         .then((respond) => {
           res.send(respond);
         })
@@ -56,6 +57,34 @@ class ProcurementController {
           console.log("Get All Sm Error : ", err);
         })
     );
+  }
+
+  // Fetch SM Statistic Result
+  static async getSMStatisticsResult(req, res, next){
+    tryCatch(
+      await ProcurementService.getSMProcurementService().getSMStatisticsResult()
+      .then((respond) => {
+        res.send(respond);
+      })
+      .catch((err) => {
+        console.log("Get STF Statistics Result Error : ", err);
+      })
+    )
+  }
+
+  // Fetch Statistics Result Data
+  static async fetchStatisticResultDataSM(req, res, next){
+    const result_value = req.query.result_value_id;
+    tryCatch(
+      await ProcurementService.getSMProcurementService().fetchStatisticResultDataSM(result_value)
+      .then((respond) => {
+        res.send(respond);
+      })
+      .catch((err) => {
+        console.log("Get All STF Error : ", err);
+      })
+
+    )
   }
 
   // Get Waiting MTF From MTF Tables

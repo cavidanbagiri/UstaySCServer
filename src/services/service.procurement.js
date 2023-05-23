@@ -5,15 +5,10 @@ const moment = require("moment");
 
 const STFModel = db.STFModel;
 const SMModel = db.SMModel;
-const SMSNumsModel = db.SMSNumsModel;
 
-const ConditionModel = db.ConditionModel;
-
-class ProcurementService {
-
+class STFProcurementService {
   // Fetch STF Statistic Result
-  static async getSTFStatisticsResult(){
-
+  static async getSTFStatisticsResult() {
     const result = await db.sequelize.query(`
       select "SituationModelId", COUNT("SituationModelId") from conditions 
       GROUP BY "SituationModelId"
@@ -22,10 +17,8 @@ class ProcurementService {
     return result[0];
   }
 
+  // Fetch All STF
   static async fetchAllSTF() {
-
-
-    // Fetch All STF
     const string_query = `
     SELECT situations.situation,
     stfs.stf_num, stfs.created_at, stfs.material_name, stfs.count, stfs.unit,
@@ -34,13 +27,12 @@ class ProcurementService {
     LEFT JOIN situations ON conditions."SituationModelId"=situations.id
     LEFT JOIN stfs ON conditions."STFModelId"=stfs.id
     LEFT JOIN users ON stfs."UserModelId"=users.id   
-    `
+    `;
     const result = await db.sequelize.query(string_query);
     return result[0];
   }
 
-  static async fetchStatisticResultData (result_value_id) {
-
+  static async fetchStatisticResultData(result_value_id) {
     const string_query = `
     SELECT situations.situation,
     stfs.stf_num, stfs.created_at, stfs.material_name, stfs.count, stfs.unit,
@@ -50,14 +42,15 @@ class ProcurementService {
     LEFT JOIN stfs ON conditions."STFModelId"=stfs.id
     LEFT JOIN users ON stfs."UserModelId"=users.id   
     where conditions."SituationModelId"=${result_value_id}
-    `
+    `;
 
     const result = await db.sequelize.query(string_query);
 
     return result[0];
   }
+}
 
-
+class SMProcurementService {
   // Fetch All SM
   static async getAllSm() {
     const string_query = `
@@ -78,27 +71,57 @@ class ProcurementService {
     return result[0];
   }
 
-  // Get Waiting STF From STF Tables
-  static async getWaitingSTF() {
-    const string_query = `
-        SELECT stfs.*, users.username, fields.field_name, situations.situation FROM stfs
-        LEFT JOIN users ON stfs."UserModelId"=users.id
-        LEFT JOIN fields ON fields.id=stfs."FieldsModelId"
-        LEFT JOIN conditions cond ON cond."STFModelId" = stfs.id
-        LEFT JOIN situations ON situations.id=cond."SituationModelId"
-        WHERE situations.situation='Waiting'
-        ORDER BY stfs.stf_num DESC
-    `;
-    const result = await db.sequelize.query(string_query);
+  // Fetch SM Statistic Result
+  static async getSMStatisticsResult() {
+    const result = await db.sequelize.query(`
+      select "SituationModelId", COUNT("SituationModelId") from conditions 
+      GROUP BY "SituationModelId"
+      ORDER BY "SituationModelId"
+    `);
     return result[0];
   }
+
+  // Fetch SM Data accoring to processing or Received
+  static async fetchStatisticResultDataSM(result_value_id) {
+    const string_query = `
+    SELECT sms.* , users.username as orderer, vendors.vendor_name, s.situation,
+    stfs.created_at, stfs.stf_num, stfs.material_name,
+    stfs.count, stfs.unit, us.username
+    FROM sms
+    LEFT JOIN stfs ON sms."STFModelId"=stfs.id
+    LEFT JOIN vendors ON sms."VendorModelId"=vendors.id
+    LEFT JOIN users ON stfs."UserModelId"=users.id
+    left join users us on us.id=sms."supplierName"
+    LEFT JOIN conditions c ON c."STFModelId"=stfs.id
+    LEFT JOIN situations s ON c."SituationModelId"=s.id
+    where c."SituationModelId"=${result_value_id}
+    `;
+
+    const result = await db.sequelize.query(string_query);
+
+    return result[0];
+  }
+}
+
+class ProcurementService {
+
+  // Get STF Service Class
+  static getSTFProcurementService() {
+    return STFProcurementService;
+  }
+
+  // Get SM Service Class
+  static getSMProcurementService() {
+    return SMProcurementService;
+  }
+
 
   // Create Firstly SMS Num
   static async getLastNumFromSMSnums() {
     const string_query =
       'insert into smsnums(smnum, "createdAt", "updatedAt") values( 1+ (select smnum from smsnums order by smnum desc limit 1), current_timestamp, current_timestamp ) returning smnum ';
     const result = await db.sequelize.query(string_query);
-    console.log('sm_num : ',result[0][0].snnum);
+    console.log("sm_num : ", result[0][0].snnum);
     return result[0][0].smnum;
   }
 
@@ -108,12 +131,11 @@ class ProcurementService {
     const sm_num = await this.getLastNumFromSMSnums();
     for (let i = 0; i < data.length; i++) {
       // If There is a Data
-      if (data[i].procurement_coming_date != '') {
+      if (data[i].procurement_coming_date != "") {
         data[i].procurement_coming_date = moment(
           data[i].procurement_coming_date
         ).format("YYYY-MM-DD");
-      }
-      else{
+      } else {
         data[i].procurement_coming_date = null;
       }
       // Create sn_num form
@@ -128,7 +150,6 @@ class ProcurementService {
       );
 
       const temp = await SMModel.create(data[i]);
-
     }
 
     return "OK";
@@ -148,8 +169,6 @@ class ProcurementService {
     const result = await db.sequelize.query(string_query);
     return result[0];
   }
-
- 
 }
 
 module.exports = ProcurementService;
