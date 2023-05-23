@@ -23,7 +23,6 @@ class WarehouseController {
     tryCatch(
       await WarehouseService.acceptWaitingSM(data)
         .then((respond) => {
-          console.log("res is : ", respond);
           res.status(200).send(respond);
         })
         .catch((err) => {
@@ -39,7 +38,6 @@ class WarehouseController {
     tryCatch(
       await WarehouseService.fetchReceivedSM()
       .then((respond) => {
-        console.log("res is : ", respond);
         res.status(200).send(respond);
       })
       .catch((err) => {

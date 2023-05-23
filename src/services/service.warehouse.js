@@ -26,7 +26,6 @@ class WarehouseService {
 
   // Post Accpeted Materials
   static async acceptWaitingSM(data) {
-    console.log("data : ", data);
     for (let i = 0; i < data?.checked_values?.length; i++) {
       const temp = await WarehouseModel.create({
         delivery_amount: data.table_data[i].delivery_amount,
