@@ -29,6 +29,22 @@ class WorkSpaceController {
         })
     );
   }
+
+  // Update Task
+  static async updateTask(req, res, next) {
+    const data = req.body;
+
+    tryCatch(
+      await WorkSpaceService.updateTask(data)
+      .then((respond)=>{
+        res.send(respond);
+      }).catch((err)=>{
+        next(err);
+      })
+    )
+
+  }
+
 }
 
 module.exports = WorkSpaceController;
