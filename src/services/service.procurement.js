@@ -21,7 +21,7 @@ class STFProcurementService {
   static async fetchAllSTF() {
     const string_query = `
     SELECT situations.situation,
-    stfs.stf_num, stfs.created_at, stfs.material_name, stfs.count, stfs.unit,
+    stfs.id, stfs.stf_num, stfs.created_at, stfs.material_name, stfs.count, stfs.unit,
     users.username
     FROM conditions
     LEFT JOIN situations ON conditions."SituationModelId"=situations.id
@@ -45,7 +45,6 @@ class STFProcurementService {
     `;
 
     const result = await db.sequelize.query(string_query);
-
     return result[0];
   }
 }
@@ -56,7 +55,8 @@ class SMProcurementService {
     const string_query = `
     SELECT sms.* , users.username as orderer, vendors.vendor_name, s.situation,
     stfs.created_at, stfs.stf_num, stfs.material_name,
-    stfs.count, stfs.unit, us.username
+    stfs.count, stfs.unit,
+    us.username
     FROM sms
     LEFT JOIN stfs ON sms."STFModelId"=stfs.id
     LEFT JOIN vendors ON sms."VendorModelId"=vendors.id
@@ -67,7 +67,7 @@ class SMProcurementService {
     `;
 
     const result = await db.sequelize.query(string_query);
-    console.log("sm result : ", result[0]);
+    // console.log("sm result : ", result[0]);
     return result[0];
   }
 
@@ -121,7 +121,10 @@ class ProcurementService {
     const string_query =
       'insert into smsnums(smnum, "createdAt", "updatedAt") values( 1+ (select smnum from smsnums order by smnum desc limit 1), current_timestamp, current_timestamp ) returning smnum ';
     const result = await db.sequelize.query(string_query);
-    console.log("sm_num : ", result[0][0].snnum);
+    console.log('some : ',result);
+    console.log('some : ',result[0]);
+    console.log('some : ',result[0][0]);
+    console.log("sm_num : ", result[0][0].smnum);
     return result[0][0].smnum;
   }
 
