@@ -80,7 +80,7 @@ class OrderService {
     const project_id = userData.ProjectModelId;
 
     const string_query = `
-      SELECT stfs.stf_num, stfs.material_type, stfs.material_name, stfs.count, stfs.created_at,stfs.unit,
+      SELECT stfs.id, stfs.stf_num, stfs.material_type, stfs.material_name, stfs.count, stfs.created_at,stfs.unit,
       fields.field_name,
       situations.situation
       FROM stfs
