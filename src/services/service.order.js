@@ -146,7 +146,6 @@ class OrderService {
       where stfs.id = ${stfid}
     `
     const result = await db.sequelize.query(string_query);
-    console.log('result');
     return result[0];
   }
 
