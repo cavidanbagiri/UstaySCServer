@@ -4,6 +4,7 @@ const STFModel = db.STFModel;
 const ConditionModel = db.ConditionModel;
 
 class OrderService {
+
   // Check Sending Data Length
   static async checkData(order_data) {
     let count = 0;
@@ -135,6 +136,18 @@ class OrderService {
 
     return result[0];
 
+  }
+
+  // Get Order Detail
+  static async getRowDetails (stfid) {
+    const string_query = `
+      select * from stfs
+
+      where stfs.id = ${stfid}
+    `
+    const result = await db.sequelize.query(string_query);
+    console.log('result');
+    return result[0];
   }
 
 }

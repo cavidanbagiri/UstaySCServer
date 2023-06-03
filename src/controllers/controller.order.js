@@ -56,7 +56,6 @@ class OrderController {
   // Get STF Statistics
   static async getUserStaticSTFS(req, res, next) {
     const user_id = req.params.userid;
-    console.log('user is : ',user_id) ;
     tryCatch(
       await OrderService.getUserStaticSTFS(user_id)
       .then((respond)=>{
@@ -85,8 +84,22 @@ class OrderController {
       })
     )
 
-    // const user
+  }
 
+  // Get Order Detail
+  static async getRowDetails (req, res, next) {
+    const stfid = req.params.stfid;
+    console.log('stf : ',stfid);
+    tryCatch(
+      await OrderService.getRowDetails(stfid)
+      .then((respond)=>{
+        res.send(respond);
+      })
+      .catch((err)=>{
+        console.log('Return ROw Detail Error : ', err);
+        next(err)
+      })
+    )
   }
 
 }
