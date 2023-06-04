@@ -42,7 +42,20 @@ class WorkSpaceController {
         next(err);
       })
     )
+  }
 
+  // Remove Task
+  static async deleteTask(req, res, next) {
+    const data = req.body;
+    console.log(' sending data is : ', data);
+    tryCatch(
+      await WorkSpaceService.removeTask(data)
+      .then((respond)=>{
+        res.send(respond);
+      }).catch((err)=>{
+        next(err);
+      })
+    )
   }
 
 }

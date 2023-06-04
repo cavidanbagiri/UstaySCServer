@@ -36,6 +36,18 @@ class WorkSpaceService {
 
   }
 
+  // Delete Task
+  static async removeTask (data) {
+
+    const string_query = `DELETE FROM workmanagements where id = ${data.id}`;
+
+    const result = await db.sequelize.query(string_query);
+
+    return result;
+
+  }
+
+
 }   
 
 
