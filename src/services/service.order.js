@@ -141,9 +141,14 @@ class OrderService {
   // Get Order Detail
   static async getRowDetails (stfid) {
     const string_query = `
-      select * from stfs
-
-      where stfs.id = ${stfid}
+    select * from stfs
+    left join users on stfs."UserModelId"=users.id
+    left join sms on sms."STFModelId"=stfs.id
+    left join users u on sms."supplierName"=u.id
+    left join vendors on sms."VendorModelId"=vendors.id
+    left join conditions on conditions."STFModelId"=stfs.id
+    left join situations on conditions."SituationModelId"=situations.id
+    where stfs.id = ${stfid}
     `
     const result = await db.sequelize.query(string_query);
     return result[0];
