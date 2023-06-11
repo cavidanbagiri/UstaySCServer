@@ -121,15 +121,12 @@ class ProcurementService {
     const string_query =
       'insert into smsnums(smnum, "createdAt", "updatedAt") values( 1+ (select smnum from smsnums order by smnum desc limit 1), current_timestamp, current_timestamp ) returning smnum ';
     const result = await db.sequelize.query(string_query);
-    console.log('some : ',result);
-    console.log('some : ',result[0]);
-    console.log('some : ',result[0][0]);
-    console.log("sm_num : ", result[0][0].smnum);
     return result[0][0].smnum;
   }
 
   // Create an sm
   static async createSm(data) {
+
     // Get Last Number From Sm Num
     const sm_num = await this.getLastNumFromSMSnums();
     for (let i = 0; i < data.length; i++) {
