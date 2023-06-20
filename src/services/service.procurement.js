@@ -20,13 +20,21 @@ class STFProcurementService {
   // Fetch All STF
   static async fetchAllSTF() {
     const string_query = `
-    SELECT situations.situation,
-    stfs.id, stfs.stf_num, stfs.created_at, stfs.material_name, stfs.count, stfs.unit,
-    users.username
-    FROM conditions
-    LEFT JOIN situations ON conditions."SituationModelId"=situations.id
-    LEFT JOIN stfs ON conditions."STFModelId"=stfs.id
-    LEFT JOIN users ON stfs."UserModelId"=users.id   
+    SELECT stfs.id, stfs.stf_num, stfs.material_type, stfs.material_name, stfs.count, stfs.created_at,stfs.unit,
+    sms.sm_num,
+    sms.procurement_coming_date,
+    vendors.vendor_name,
+    users.username,
+    fields.field_name,
+    situations.situation
+    FROM stfs
+    LEFT JOIN fields ON fields.id=stfs."FieldsModelId"
+    LEFT JOIN conditions cond ON cond."STFModelId" = stfs.id
+    LEFT JOIN situations ON situations.id=cond."SituationModelId"
+    LEFT JOIN sms on sms."STFModelId"=stfs.id
+    LEFT JOIN vendors on sms."VendorModelId"=vendors.id
+    LEFT JOIN users on sms."supplierName"=users.id
+      ORDER BY stfs.stf_num DESC
     `;
     const result = await db.sequelize.query(string_query);
     return result[0];

@@ -86,15 +86,15 @@ class OrderService {
     sms.procurement_coming_date,
     vendors.vendor_name,
     users.username,
-  fields.field_name,
-  situations.situation
-  FROM stfs
-  LEFT JOIN fields ON fields.id=stfs."FieldsModelId"
-  LEFT JOIN conditions cond ON cond."STFModelId" = stfs.id
-  LEFT JOIN situations ON situations.id=cond."SituationModelId"
-  LEFT JOIN sms on sms."STFModelId"=stfs.id
-  LEFT JOIN vendors on sms."VendorModelId"=vendors.id
-  LEFT JOIN users on sms."supplierName"=users.id
+    fields.field_name,
+    situations.situation
+    FROM stfs
+    LEFT JOIN fields ON fields.id=stfs."FieldsModelId"
+    LEFT JOIN conditions cond ON cond."STFModelId" = stfs.id
+    LEFT JOIN situations ON situations.id=cond."SituationModelId"
+    LEFT JOIN sms on sms."STFModelId"=stfs.id
+    LEFT JOIN vendors on sms."VendorModelId"=vendors.id
+    LEFT JOIN users on sms."supplierName"=users.id
       WHERE stfs."UserModelId"=${user_id} AND stfs."ProjectModelId"=${project_id}
       ORDER BY stfs.stf_num DESC
     `;
