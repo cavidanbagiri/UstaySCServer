@@ -3,7 +3,7 @@ const moment = require('moment');
 module.exports = (sequelize, DataTypes, Model) => {
 
     class STFModel extends Model{}
-    const queryInterface = sequelize.getQueryInterface();
+    // const queryInterface = sequelize.getQueryInterface();
     STFModel.init({
         id: {
             type: DataTypes.INTEGER,
@@ -19,7 +19,7 @@ module.exports = (sequelize, DataTypes, Model) => {
             allowNull: false
         },
         material_name: {
-            type: DataTypes.STRING,
+            type: DataTypes.STRING(1234),
             allowNull: false
         },
         link: {
@@ -44,9 +44,13 @@ module.exports = (sequelize, DataTypes, Model) => {
             allowNull: true
         },
         created_at: {
+            type: DataTypes.DATE,
             allowNull: false,
-            type: DataTypes.DATEONLY,
-            defaultValue: moment(new Date()).format('YYYY-MM-DD'),
+            defaultValue: sequelize.literal('CURRENT_TIMESTAMP'),
+            get() {
+                const dateText = this.getDataValue('created_at');
+                return moment(dateText).format('YYYY-MM-DD HH:mm:ss');
+            }
         },
     },{
         tableName:'stfs',

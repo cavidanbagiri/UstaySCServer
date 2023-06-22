@@ -29,20 +29,13 @@ class OrderService {
   }
 
   static async createStf(data) {
-    console.log('Enter created method');
+
     // Take User Inform from data
     const user_data = data.user;
     // Take Order Data from data
     const order_data = data.orders;
-
-    // Create stfsnums just one time and get stfs nums
-    let stf_num = await this.getLastNumFromSTFSNums();
-
-    // Get Project Model Id Name + stfnum for inserting stf table
-    switch (user_data.ProjectModelId) {
-      case 1:
-        stf_num = `SRU.RS21.${stf_num}`;
-    }
+    // Data For After Creating
+    let returning_result = '';
 
     // Check How Many true order row have
     const order_length = await this.checkData(order_data);
@@ -51,6 +44,13 @@ class OrderService {
     if (order_length === 0) {
       throw new Error("MTF Cant Create first");
     } else {
+      // Create stfsnums just one time and get stfs nums
+      let stf_num = await this.getLastNumFromSTFSNums();
+      // Get Project Model Id Name + stfnum for inserting stf table
+      switch (user_data.ProjectModelId) {
+        case 1:
+          stf_num = `SRU.RS21.${stf_num}`;
+      }
       for (let i = 0; i < order_length; i++) {
         order_data[i].UserModelId = user_data.id;
         order_data[i].ProjectModelId = user_data.ProjectModelId;
@@ -68,9 +68,8 @@ class OrderService {
           throw new Error(err);
         })
       }
+      returning_result = await db.sequelize.query(`select * from stfs where stf_num='${stf_num}'`);
     }
-    const returning_result = await db.sequelize.query(`select * from stfs where stf_num='${stf_num}'`);
-    console.log('result is : ',returning_result);
     return returning_result[0];
 
   }
