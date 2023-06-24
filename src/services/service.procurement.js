@@ -136,29 +136,40 @@ class ProcurementService {
   static async createSm(data) {
 
     // Get Last Number From Sm Num
-    const sm_num = await this.getLastNumFromSMSnums();
-    for (let i = 0; i < data.length; i++) {
-      // If There is a Data
-      if (data[i].procurement_coming_date != "") {
-        data[i].procurement_coming_date = moment(
-          data[i].procurement_coming_date
-        ).format("YYYY-MM-DD");
-      } else {
-        data[i].procurement_coming_date = null;
+    const sm_num = await this.getLastNumFromSMSnums()
+    .then(async (respond)=>{
+      for (let i = 0; i < data.length; i++) {
+        // If There is a Data
+        if (data[i].procurement_coming_date != "") {
+          data[i].procurement_coming_date = moment(
+            data[i].procurement_coming_date
+          ).format("YYYY-MM-DD");
+        } else {
+          data[i].procurement_coming_date = null;
+        }
+        // Create sn_num form
+        // switch (data[i].ProjectModelId) {
+        //   case 1:
+            data[i].sm_num = `SRU.RS21.SM.${respond}`;
+        //     break;
+        // }
+        console.log(`sm num is ${respond} : `,data[i]);
+        const temp = await SMModel.create(data[i])
+        .then(async (respond)=>{
+          // Update Conditions set SitutationModelId with Processing
+          const update_situations = await db.sequelize.query(
+            `update conditions set "SituationModelId"=2 where "STFModelId"=${data[i].STFModelId} `
+          );
+        })
+        .catch((err)=>{
+          throw new Error(err);
+        })
+  
       }
-      // Create sn_num form
-      switch (data[i].ProjectModelId) {
-        case 1:
-          data[i].sm_num = `SRU.RS21.SM.${sm_num}`;
-          break;
-      }
-      // Update Conditions set SitutationModelId with Processing
-      const update_situations = await db.sequelize.query(
-        `update conditions set "SituationModelId"=2 where "STFModelId"=${data[i].STFModelId} `
-      );
-
-      const temp = await SMModel.create(data[i]);
-    }
+    })
+    .catch((err)=>{
+      throw new Error(err);
+    })
 
     return "OK";
   }

@@ -28,7 +28,7 @@ router.get('/getstatisticresultsm', ProcurementController.fetchStatisticResultDa
 
 
 
-router.post('/createstf', ProcurementController.createSm);
+router.post('/createsm', ProcurementController.createSm);
 
 router.get('/companies', ProcurementController.fetchCompaniesNames);
 router.get('/users', ProcurementController.fetchUsers);
