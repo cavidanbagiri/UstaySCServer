@@ -6,18 +6,19 @@ class WarehouseService {
   // Fetch Materials
   static async fetchWaitingSMS() {
     const string_query = `      
-        select stfs.*, users.username as orderer, sms.id as mainid, 
-        sms.id as sms_id, sms.sm_num,
-        sms.price, sms.currency, 
-        us.username, vn.vendor_name, 
-        situations.situation
-        from conditions c
-        left join stfs on c."STFModelId"=stfs.id
-        left join sms on sms."STFModelId"=stfs.id
-        left join vendors vn on sms."VendorModelId"=vn.id
-        left join users on users.id=stfs."UserModelId"
+        SELECT sms.id as sm_id, sms.sm_num, sms.procurement_coming_date, sms.price, sms.total,
+        sms.currency, 
+        users.username as orderer, vendors.vendor_name, s.situation,
+        stfs.id as id, stfs.created_at, stfs.stf_num, 
+        stfs.material_name,stfs.count, stfs.unit,
+        us.username
+        FROM sms
+        LEFT JOIN stfs ON sms."STFModelId"=stfs.id
+        LEFT JOIN vendors ON sms."VendorModelId"=vendors.id
+        LEFT JOIN users ON stfs."UserModelId"=users.id
         left join users us on us.id=sms."supplierName"
-        LEFT JOIN situations ON c."SituationModelId" = situations.id
+        LEFT JOIN conditions c ON c."STFModelId"=stfs.id
+        LEFT JOIN situations s ON c."SituationModelId"=s.id
         where c."SituationModelId"=2
         `;
     const result = await db.sequelize.query(string_query);
@@ -66,9 +67,7 @@ class WarehouseService {
         `;
     const result = await db.sequelize.query(string_query);
     return result[0];
-    
   }
-
 }
 
 module.exports = WarehouseService;
