@@ -31,7 +31,7 @@ class WarehouseService {
     for (let i = 0; i < data?.checked_values?.length; i++) {
       const temp = await WarehouseModel.create({
 
-        //         
+        // Each Table Inform
         delivery_amount: data.table_data[i].delivery_amount,
         passport: data.table_data[i].passport,
         certificate: data.table_data[i].certificate,
@@ -45,14 +45,24 @@ class WarehouseService {
         acceptedBy: data.user.id,
         ProjectModelId: data.user.ProjectModelId,
 
-        // This doeant work
+        // Get SM Model ID 
         SMModelId: data.checked_values[i].sm_id,
 
       }).then(async (respond) => {
         let string_query = `
                     update conditions set "SituationModelId"=3 where "STFModelId"=${data.checked_values[i].id}
                 `;
-        const update_temp = await db.sequelize.query(string_query);
+        const update_temp = await db.sequelize.query(string_query)
+        .then(async(respond)=>{
+          await this.checkSMComplete()
+          .then((respond)=>{
+
+          }).catch((err)=>{
+            throw new Error(err);
+          })
+        }).catch((err)=>{
+          throw new Error(err);
+        })
       }).catch((err)=>{
         throw new Error(err);
       })
@@ -81,6 +91,13 @@ class WarehouseService {
     const result = await db.sequelize.query(string_query);
     return result[0];
   }
+
+  // Set Data For SMStatusModel that completed or non completed
+  static async checkSMComplete(){
+
+  }
+
+
 }
 
 module.exports = WarehouseService;

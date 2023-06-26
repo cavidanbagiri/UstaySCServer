@@ -46,6 +46,7 @@ const SituationModel = require('../models/model.situation');
 const STFSNumsModel = require('../models/model.stfsnums');
 const SMSNumsModel = require('../models/model.smsnums');
 const WorkManagementModel = require('../models/model.workmanagements');
+const SMStatusModel = require('../models/model.smstatusmodel');
 
 // Create an empty Object
 const db = {};
@@ -70,6 +71,7 @@ db.SituationModel = SituationModel(sequelize, DataTypes, Model);
 db.STFSNumsModel = STFSNumsModel(sequelize, DataTypes, Model);
 db.SMSNumsModel = SMSNumsModel(sequelize, DataTypes, Model);
 db.WorkManagementModel = WorkManagementModel(sequelize, DataTypes, Model);
+db.SMStatusModel = SMStatusModel(sequelize, DataTypes, Model);
 
 /**************************************** Create a Relationship **************/
 
@@ -115,7 +117,6 @@ db.SMModel.belongsTo(db.UserModel);
 // Condition Model
 db.SituationModel.hasMany(db.ConditionModel);
 db.ConditionModel.belongsTo(db.SituationModel);
-
 db.STFModel.hasMany(db.ConditionModel);
 db.ConditionModel.belongsTo(db.STFModel);
 db.ProjectModel.hasMany(db.ConditionModel);
@@ -133,6 +134,11 @@ db.WarehouseModel.belongsTo(db.UserModel);
 db.ProjectModel.hasMany(db.WarehouseModel);
 db.WarehouseModel.belongsTo(db.ProjectModel);
 
+// SM Status Model
+db.SMModel.hasMany(db.SMStatusModel);
+db.SMStatusModel.belongsTo(db.SMModel);
+db.STFModel.hasMany(db.SMStatusModel);
+db.SMStatusModel.belongsTo(db.STFModel);
 
 // Work Management Model
 db.UserModel.hasMany(db.WorkManagementModel);
