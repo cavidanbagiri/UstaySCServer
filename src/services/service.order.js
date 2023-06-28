@@ -87,7 +87,7 @@ class OrderService {
     const project_id = userData.ProjectModelId;
 
     const string_query = `
-    SELECT stfs.id, stfs.stf_num, stfs.material_type, stfs.material_name, stfs.count, stfs.created_at,stfs.unit,
+    SELECT stfs.id as stf_id, stfs.stf_num, stfs.material_type, stfs.material_name, stfs.count, stfs.created_at,stfs.unit,
       sms.sm_num,
       sms.procurement_coming_date,
       vendors.vendor_name,
@@ -131,8 +131,6 @@ class OrderService {
   // Fetch Statistic Data For Each User
   static async fetchStatisticResultData(data) {
     const string_query = `
-
-
     SELECT stfs.stf_num, stfs.material_type, stfs.material_name, stfs.count, stfs.created_at,stfs.unit,
       fields.field_name,
       situations.situation
@@ -142,7 +140,6 @@ class OrderService {
       LEFT JOIN situations ON situations.id=cond."SituationModelId"
       WHERE stfs."UserModelId"=${data.user_id} AND cond."SituationModelId"=${data.result_value}
       ORDER BY stfs.stf_num DESC
-
     `;
 
     const result = await db.sequelize.query(string_query);

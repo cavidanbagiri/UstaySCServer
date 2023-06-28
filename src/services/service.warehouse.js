@@ -9,7 +9,7 @@ class WarehouseService {
         SELECT sms.id as sm_id, sms.sm_num, sms.procurement_coming_date, sms.price, sms.total,
         sms.currency, 
         users.username as orderer, vendors.vendor_name, s.situation,
-        stfs.id as id, stfs.created_at, stfs.stf_num, 
+        stfs.id as stf_id, stfs.created_at, stfs.stf_num, 
         stfs.material_name,stfs.count, stfs.unit,
         us.username
         FROM sms
@@ -50,7 +50,7 @@ class WarehouseService {
 
       }).then(async (respond) => {
         let string_query = `
-                    update conditions set "SituationModelId"=3 where "STFModelId"=${data.checked_values[i].id}
+                    update conditions set "SituationModelId"=3 where "STFModelId"=${data.checked_values[i].stf_id}
                 `;
         const update_temp = await db.sequelize.query(string_query)
         .then(async(respond)=>{
@@ -86,7 +86,7 @@ class WarehouseService {
         left join users us on us.id=sms."supplierName"
         LEFT JOIN conditions c ON c."STFModelId"=stfs.id
         LEFT JOIN situations s ON c."SituationModelId"=s.id
-        where c."SituationModelId"=2
+        where c."SituationModelId"=3
         `;
     const result = await db.sequelize.query(string_query);
     return result[0];

@@ -20,7 +20,7 @@ class STFProcurementService {
   // Fetch All STF
   static async fetchAllSTF() {
     const string_query = `
-    SELECT stfs.id, stfs.stf_num, stfs.material_type, stfs.material_name, stfs.count, stfs.created_at,stfs.unit,
+    SELECT stfs.id as stf_id, stfs.stf_num, stfs.material_type, stfs.material_name, stfs.count, stfs.created_at,stfs.unit,
     sms.sm_num,
     sms.procurement_coming_date,
     vendors.vendor_name,
@@ -61,7 +61,8 @@ class SMProcurementService {
   // Fetch All SM
   static async getAllSm() {
     const string_query = `
-    SELECT sms.* , users.username as orderer, vendors.vendor_name, s.situation,
+    SELECT sms.id as sm_id, sms.sm_num, sms.procurement_coming_date, sms.price, sms.total, sms.currency, sms.created_at, 
+    users.username as orderer, vendors.vendor_name, s.situation,
     stfs.created_at, stfs.stf_num, stfs.material_name,
     stfs.count, stfs.unit,
     us.username
@@ -134,8 +135,8 @@ class ProcurementService {
 
   // Create an sm
   static async createSm(data) {
-
-    // Get Last Number From Sm Num
+    //console.log('data : ',data);
+    //Get Last Number From Sm Num
     const sm_num = await this.getLastNumFromSMSnums()
     .then(async (respond)=>{
       for (let i = 0; i < data.length; i++) {
