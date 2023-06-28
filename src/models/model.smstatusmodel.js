@@ -17,6 +17,10 @@ module.exports = (sequelize, DataTypes, Model) => {
             type: DataTypes.FLOAT,
             allowNull: false
         },
+        left_over: {
+            type: DataTypes.FLOAT,
+            allowNull: false
+        },
         status: {
             type: DataTypes.BOOLEAN,
             allowNull: false
