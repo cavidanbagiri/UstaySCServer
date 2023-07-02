@@ -61,7 +61,7 @@ class SMProcurementService {
   // Fetch All SM
   static async getAllSm() {
     const string_query = `
-    SELECT sms.id as sm_id, sms.sm_num, sms.procurement_coming_date, sms.price, sms.total, sms.currency, sms.created_at, 
+    SELECT sms.id as sm_id, sms.sm_num, sms.procurement_coming_date, sms.price, sms.total, sms.currency, sms.created_at, sms.sms_amount, sms.left_over_amount,
     users.username as orderer, vendors.vendor_name, s.situation,
     stfs.created_at, stfs.stf_num, stfs.material_name,
     stfs.count, stfs.unit,
@@ -135,8 +135,9 @@ class ProcurementService {
 
   // Create an sm
   static async createSm(data) {
-    //console.log('data : ',data);
+    console.log('data : ',data);
     //Get Last Number From Sm Num
+
     const sm_num = await this.getLastNumFromSMSnums()
     .then(async (respond)=>{
       for (let i = 0; i < data.length; i++) {
@@ -148,12 +149,7 @@ class ProcurementService {
         } else {
           data[i].procurement_coming_date = null;
         }
-        // Create sn_num form
-        // switch (data[i].ProjectModelId) {
-        //   case 1:
-            data[i].sm_num = `SRU.RS21.SM.${respond}`;
-        //     break;
-        // }
+        data[i].sm_num = `SRU.RS21.SM.${respond}`;
         console.log(`sm num is ${respond} : `,data[i]);
         const temp = await SMModel.create(data[i])
         .then(async (respond)=>{

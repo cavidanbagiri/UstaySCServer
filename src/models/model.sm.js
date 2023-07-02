@@ -30,6 +30,14 @@ module.exports = (sequelize, DataTypes, Model) => {
             type: DataTypes.CHAR(6), 
             allowNull: true
         },
+        sms_amount : {
+            type: DataTypes.FLOAT, 
+            allowNull: true
+        },
+        left_over_amount : {
+            type: DataTypes.FLOAT, 
+            allowNull: true
+        },
         comment: {
             type: DataTypes.STRING,
             allowNull: true
