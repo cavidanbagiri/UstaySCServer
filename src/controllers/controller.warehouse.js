@@ -34,7 +34,6 @@ class WarehouseController {
 
   // Fetch Received Sm
   static async fetchReceivedSM(req, res, next) { 
-
     tryCatch(
       await WarehouseService.fetchReceivedSM()
       .then((respond) => {
@@ -45,7 +44,35 @@ class WarehouseController {
         next(err);
       })
     )
+  }
 
+  // Get Statistic Result
+  static async getStatisticResult(req, res, next){
+    tryCatch(
+      WarehouseService.getStatisticResult()
+      .then((respond)=>{
+        console.log('Warehouse Statistic Result  : ',respond);
+        res.status(200).send(respond);
+      }).catch((err)=>{
+        console.log('Get Warehouse Statistic Result Error : ',err);
+        next(err)
+      })
+    )
+  }
+
+  //
+  static async getStatisticResultData(req, res, next){
+    const result_value = req.query.result_value_id;
+    tryCatch(
+      WarehouseService.getStatisticResultData(result_value)
+      .then((respond)=>{
+        console.log('Warehouse Statistic Result Data : ',respond);
+        res.status(200).send(respond);
+      }).catch((err)=>{
+        console.log('Get Warehouse Statistic Result Error : ',err);
+        next(err)
+      })
+    )
   }
 
 }

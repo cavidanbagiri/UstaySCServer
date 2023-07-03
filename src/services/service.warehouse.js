@@ -137,6 +137,33 @@ class WarehouseService {
       })
   }
 
+  static async getStatisticResult (){
+    const string_query = 
+    `
+    select "SituationModelId", COUNT("SituationModelId") from conditions 
+      GROUP BY "SituationModelId"
+      ORDER BY "SituationModelId"
+    `
+    const result = await db.sequelize.query(string_query);
+    return result[0];
+  }
+
+  static async getStatisticResultData (result_value_id){
+    const string_query = `
+    SELECT situations.situation,
+    stfs.stf_num, stfs.created_at, stfs.material_name, stfs.count, stfs.unit,
+    users.username
+    FROM conditions
+    LEFT JOIN situations ON conditions."SituationModelId"=situations.id
+    LEFT JOIN stfs ON conditions."STFModelId"=stfs.id
+    LEFT JOIN users ON stfs."UserModelId"=users.id   
+    where conditions."SituationModelId"=${result_value_id}
+    `;
+
+    const result = await db.sequelize.query(string_query);
+    return result[0];
+  }
+
 }
 
 module.exports = WarehouseService;
