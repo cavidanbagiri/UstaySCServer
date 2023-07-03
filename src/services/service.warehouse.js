@@ -31,7 +31,7 @@ class WarehouseService {
     SELECT sms.id as sm_id, sms.sm_num, sms.procurement_coming_date, sms.price, sms.total, warehouse.delivery_amount,
     sms.currency,
     users.username as orderer, vendors.vendor_name, s.situation,
-    stfs.id as id, stfs.created_at, stfs.stf_num,
+    stfs.id as stf_id, stfs.created_at, stfs.stf_num,
     stfs.material_name,stfs.unit,
     us.username
     FROM warehouse

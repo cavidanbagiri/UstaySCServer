@@ -63,8 +63,7 @@ class SMProcurementService {
     const string_query = `
     SELECT sms.id as sm_id, sms.sm_num, sms.procurement_coming_date, sms.price, sms.total, sms.currency, sms.created_at, sms.sms_amount, sms.left_over_amount,
     users.username as orderer, vendors.vendor_name, s.situation,
-    stfs.created_at, stfs.stf_num, stfs.material_name,
-    stfs.count, stfs.unit,
+    stfs.id as stf_id, stfs.created_at, stfs.stf_num, stfs.material_name, stfs.count, stfs.unit,
     us.username
     FROM sms
     LEFT JOIN stfs ON sms."STFModelId"=stfs.id
