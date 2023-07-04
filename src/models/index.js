@@ -3,32 +3,47 @@ const { Sequelize, DataTypes, Model } = require("sequelize");
 const dbConfig = require("../config/config");
 
 // Configuration Database
-const sequelize = new Sequelize(
-  dbConfig.DATABASE,
-  dbConfig.USERNAME,
-  dbConfig.PASSWORD,
-  {
-    host: dbConfig.HOST,
-    dialect: dbConfig.DIALECT,
-  },
-  dbConfig.timezone
-);
+// const sequelize = new Sequelize(
+//   dbConfig.DATABASE,
+//   dbConfig.USERNAME,
+//   dbConfig.PASSWORD,
+//   {
+//     host: dbConfig.HOST,
+//     dialect: dbConfig.DIALECT,
+//   },
+//   dbConfig.timezone
+// );
+
+const sequelize = new Sequelize('postgres://ustay_user:72BaYcPnLngQWjX3uIfEpVhfEg3y3jT7@dpg-cii7n459aq012eq9u9cg-a.oregon-postgres.render.com/ustay?sslmode=no-verify')
+
+// const sequelize = new Sequelize('postgres://postgres:Initial_123@localhost/ustay')
+
+const cr = async () => {
+  try {
+    await sequelize.authenticate();
+    console.log('Connection has been established successfully.');
+  } catch (error) {
+    console.error('Unable to connect to the database:', error);
+  }
+}
+
+cr();
 
 // Create Connection
-(createConnection = async () => {
-  try {
-    await sequelize
-      .authenticate()
-      .then((_) => {
-        console.log("Connection Created");
-      })
-      .catch((err) => {
-        console.log("Create Connection Failed from authenticate");
-      });
-  } catch (err) {
-    console.log("Create Connection Failed");
-  }
-})();
+// (createConnection = async () => {
+//   try {
+//     await sequelize
+//       .authenticate()
+//       .then((_) => {
+//         console.log("Connection Created");
+//       })
+//       .catch((err) => {
+//         console.log("Create Connection Failed from authenticate : ",err);
+//       });
+//   } catch (err) {
+//     console.log("Create Connection Failed", err);
+//   }
+// })();
 
 // Import Models
 const ProjectModel = require("../models/model.project");
