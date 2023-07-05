@@ -1,6 +1,9 @@
 
 const express = require('express');
 const app = express();
+
+require('dotenv').config()
+
 var cors = require('cors')
 
 // Import ErrorHandler 
@@ -29,5 +32,5 @@ app.use('/workspace', WorkSpaceRouter)
 app.use(errorHandler);
 
 app.listen(3000,()=>{
-    console.log('listening 3000 port');
+    console.log(`listening ${process.env.PORT} port`);
 })

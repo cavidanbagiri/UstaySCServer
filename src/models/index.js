@@ -1,6 +1,5 @@
 const { Sequelize, DataTypes, Model } = require("sequelize");
 
-const dbConfig = require("../config/config");
 
 // Configuration Database
 // const sequelize = new Sequelize(
@@ -14,7 +13,7 @@ const dbConfig = require("../config/config");
 //   dbConfig.timezone
 // );
 
-const sequelize = new Sequelize('postgres://ustay_user:72BaYcPnLngQWjX3uIfEpVhfEg3y3jT7@dpg-cii7n459aq012eq9u9cg-a.oregon-postgres.render.com/ustay?sslmode=no-verify')
+const sequelize = new Sequelize(`postgres://${process.env.DATABASE_USER}:${process.env.DATABASE_PASSWORD}@${process.env.DATABASE_HOSTNAME}/${process.env.DATABASE_NAME}?sslmode=no-verify`)
 
 // const sequelize = new Sequelize('postgres://postgres:Initial_123@localhost/ustay')
 
