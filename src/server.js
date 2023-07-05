@@ -21,13 +21,14 @@ app.use(express.json());
 // Using Cors Policy
 app.use(cors())
 
+const api = 'https://ustay.onrender.com/';
 
 // Get Creating Routes
-app.use(`${process.env.API}/user`, UserRoutes); 
-app.use(`${process.env.API}/order`, OrderRoutes);
-app.use(`${process.env.API}/procurement`, ProcurementRoutes);
-app.use(`${process.env.API}/warehouse`, WarehouseRouter);
-app.use(`${process.env.API}/workspace`, WorkSpaceRouter)
+app.use(`${api}/user`, UserRoutes);
+app.use(`${api}/order`, OrderRoutes);
+app.use(`${api}/procurement`, ProcurementRoutes);
+app.use(`${api}/warehouse`, WarehouseRouter);
+app.use(`${api}/workspace`, WorkSpaceRouter)
 
 // Handle Error
 app.use(errorHandler);
