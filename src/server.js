@@ -24,11 +24,11 @@ app.use(cors())
 const api = 'https://ustay.onrender.com/';
 
 // Get Creating Routes
-app.use(`${api}/user`, UserRoutes);
-app.use(`${api}/order`, OrderRoutes);
-app.use(`${api}/procurement`, ProcurementRoutes);
-app.use(`${api}/warehouse`, WarehouseRouter);
-app.use(`${api}/workspace`, WorkSpaceRouter)
+app.use(`/user`, UserRoutes);
+app.use(`/order`, OrderRoutes);
+app.use(`/procurement`, ProcurementRoutes);
+app.use(`/warehouse`, WarehouseRouter);
+app.use(`/workspace`, WorkSpaceRouter)
 
 // Handle Error
 app.use(errorHandler);
