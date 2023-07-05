@@ -21,12 +21,13 @@ app.use(express.json());
 // Using Cors Policy
 app.use(cors())
 
+
 // Get Creating Routes
-app.use('/user', UserRoutes);
-app.use('/order', OrderRoutes);
-app.use('/procurement', ProcurementRoutes);
-app.use('/warehouse', WarehouseRouter);
-app.use('/workspace', WorkSpaceRouter)
+app.use(`${process.env.api}/user`, UserRoutes);
+app.use(`${process.env.api}/order`, OrderRoutes);
+app.use(`${process.env.api}/procurement`, ProcurementRoutes);
+app.use(`${process.env.api}/warehouse`, WarehouseRouter);
+app.use(`${process.env.api}/workspace`, WorkSpaceRouter)
 
 // Handle Error
 app.use(errorHandler);
