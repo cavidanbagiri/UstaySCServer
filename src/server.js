@@ -23,11 +23,11 @@ app.use(cors())
 
 
 // Get Creating Routes
-app.use(`${process.env.api}/user`, UserRoutes);
-app.use(`${process.env.api}/order`, OrderRoutes);
-app.use(`${process.env.api}/procurement`, ProcurementRoutes);
-app.use(`${process.env.api}/warehouse`, WarehouseRouter);
-app.use(`${process.env.api}/workspace`, WorkSpaceRouter)
+app.use(`${process.env.API}/user`, UserRoutes); 
+app.use(`${process.env.API}/order`, OrderRoutes);
+app.use(`${process.env.API}/procurement`, ProcurementRoutes);
+app.use(`${process.env.API}/warehouse`, WarehouseRouter);
+app.use(`${process.env.API}/workspace`, WorkSpaceRouter)
 
 // Handle Error
 app.use(errorHandler);
