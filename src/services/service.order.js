@@ -4,7 +4,6 @@ const STFModel = db.STFModel;
 const ConditionModel = db.ConditionModel;
 
 class OrderService {
-  
   // Check Sending Data Length
   static async checkData(order_data) {
     let count = 0;
@@ -47,36 +46,40 @@ class OrderService {
     } else {
       // Create stfsnums just one time and get stfs nums
       let stf_num = await this.getLastNumFromSTFSNums()
-      .then(async (stf_num)=>{
-        // Get Project Model Id Name + stfnum for inserting stf table
-        switch (user_data.ProjectModelId) {
-          case 1:
-            stf_num = `SRU.RS21.${stf_num}`;
-        }
-        for (let i = 0; i < order_length; i++) {
-          order_data[i].UserModelId = user_data.id;
-          order_data[i].ProjectModelId = user_data.ProjectModelId;
-          order_data[i].DepartmentModelId = user_data.DepartmentModelId;
-          order_data[i].stf_num = stf_num;
-          const creating_data = await STFModel.create(order_data[i])
-            .then(async (respond) => {
-              const adding_conditions = await ConditionModel.create({
-                SituationModelId: 1,
-                STFModelId: respond.dataValues.id,
-                ProjectModelId: respond.dataValues.ProjectModelId,
+        .then(async (stf_num) => {
+          // Get Project Model Id Name + stfnum for inserting stf table
+          switch (user_data.ProjectModelId) {
+            case 1:
+              stf_num = `SRU.RS21.${stf_num}`;
+          }
+          for (let i = 0; i < order_length; i++) {
+            order_data[i].UserModelId = user_data.id;
+            order_data[i].ProjectModelId = user_data.ProjectModelId;
+            order_data[i].DepartmentModelId = user_data.DepartmentModelId;
+            order_data[i].stf_num = stf_num;
+            const creating_data = await STFModel.create(order_data[i])
+              .then(async (respond) => {
+                const adding_conditions = await ConditionModel.create({
+                  SituationModelId: 1,
+                  STFModelId: respond.dataValues.id,
+                  ProjectModelId: respond.dataValues.ProjectModelId,
+                });
+              })
+              .catch((err) => {
+                console.log("Error Happen inside of Create STFTemp : ", err);
+                throw new Error(err);
               });
-            })
-            .catch((err) => {
-              console.log("Error Happen inside of Create STFTemp : ", err);
-              throw new Error(err);
-            });
-        }
-        returning_result = await db.sequelize.query(
-          `select * from stfs where stf_num='${stf_num}'`
-        )
-      }).catch((err)=>{
-        throw new Error('Error Happen Inside Of createSTF function in service',err)
-      })
+          }
+          returning_result = await db.sequelize.query(
+            `select * from stfs where stf_num='${stf_num}'`
+          );
+        })
+        .catch((err) => {
+          throw new Error(
+            "Error Happen Inside Of createSTF function in service",
+            err
+          );
+        });
     }
     return returning_result[0];
   }
@@ -107,40 +110,6 @@ class OrderService {
     const result = await db.sequelize.query(string_query);
 
     return result[0];
-  }
-
-  static async getFilteredData(filtered_query){
-
-    console.log('filt : ',filtered_query);
-
-    const url_query='';
-
-
-    const string_query = `
-    SELECT stfs.id as stf_id, stfs.stf_num, stfs.material_type, stfs.material_name, stfs.count, stfs.created_at,stfs.unit,
-      sms.sm_num,
-      sms.procurement_coming_date,
-      vendors.vendor_name,
-      users.username,
-      fields.field_name,
-      situations.situation
-      FROM stfs
-      LEFT JOIN fields ON fields.id=stfs."FieldsModelId"
-      LEFT JOIN conditions cond ON cond."STFModelId" = stfs.id
-      LEFT JOIN situations ON situations.id=cond."SituationModelId"
-      LEFT JOIN sms on sms."STFModelId"=stfs.id
-      LEFT JOIN vendors on sms."VendorModelId"=vendors.id
-      LEFT JOIN users on sms."supplierName"=users.id
-      WHERE stfs."UserModelId"=2 and stfs.material_type = 'Project'
-      ORDER BY stfs.stf_num DESC
-    `;
-
-    const result = await db.sequelize.query(string_query);
-
-    // console.log('res : ',result[0]);
-
-    return result[0];
-
   }
 
   // Fetch Fields From Fields Model
@@ -199,6 +168,65 @@ class OrderService {
     `;
     const result = await db.sequelize.query(string_query);
     return result[0];
+  }
+
+  static async getFilteredData(filtered_query) {
+    
+    const where_query = this.createWhereQuery(filtered_query);
+    console.log('from func where clause : ',where_query);
+    const string_query = `
+    SELECT stfs.id as stf_id, stfs.stf_num, stfs.material_type, stfs.material_name, stfs.count, stfs.created_at,stfs.unit,
+      sms.sm_num,
+      sms.procurement_coming_date,
+      vendors.vendor_name,
+      users.username,
+      fields.field_name,
+      situations.situation
+      FROM stfs
+      LEFT JOIN fields ON fields.id=stfs."FieldsModelId"
+      LEFT JOIN conditions cond ON cond."STFModelId" = stfs.id
+      LEFT JOIN situations ON situations.id=cond."SituationModelId"
+      LEFT JOIN sms on sms."STFModelId"=stfs.id
+      LEFT JOIN vendors on sms."VendorModelId"=vendors.id
+      LEFT JOIN users on sms."supplierName"=users.id
+      WHERE stfs."UserModelId"=2 and ${where_query}
+      ORDER BY stfs.stf_num DESC
+    `;
+
+    const result = await db.sequelize.query(string_query);
+
+    console.log('res : ',result[0]);
+
+    return result[0];
+    // return "OK";
+  }
+
+  static createWhereQuery(filtered_object) {
+    let where_query = '';
+
+    for (let [key, value] of Object.entries(filtered_object)) {
+      if (filtered_object[key] !== "") {
+
+        // If Key name is material name or material type, like query will work will start wil entering value
+        if(key === 'material_name' || key === 'stf_num' ){
+          where_query += `${key} LIKE '${filtered_object[key]}%' `
+        }
+        else if(key === 'created_at' ){
+          where_query += `stfs.${key} = '${filtered_object[key]}' `
+        }
+        else{
+          where_query += `${key} = '${filtered_object[key]}' `
+        }
+
+        where_query += 'and ';
+      }
+    }
+
+    // After Adding Each Filtered Key, Functions add and operator and at the end, and operations will be removed 
+    where_query = where_query.slice(0,-4);
+
+    return where_query;
+
   }
 }
 
