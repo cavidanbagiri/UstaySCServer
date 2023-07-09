@@ -9,6 +9,8 @@ const OrderController = require('../controllers/controller.order');
 router.post('/stf', OrderController.createStf);
 // Show User STF
 router.get('/showorders',OrderController.showSTF);
+// Get Filtered Data
+router.get('/filteredobject', OrderController.getFilteredData);
 // Fetch FIeld For Creating STF
 router.get('/getfields/:projectmodelid',OrderController.fetchField);
 // Get User Statistics Result STFS

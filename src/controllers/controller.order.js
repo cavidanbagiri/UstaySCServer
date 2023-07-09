@@ -23,7 +23,6 @@ class OrderController {
     // Get User Inform for getting possible MTFS from mtfs table
     const user_inform = {};
     user_inform.id = req.query.id;
-    user_inform.ProjectModelId = req.query.ProjectModelId;
     // Get Data From Service
     tryCatch(
       await OrderService.showSTF(user_inform)
@@ -32,6 +31,22 @@ class OrderController {
         })
         .catch((err) => {
           console.log('Getting Show STF Error : ',err);
+          next(err);
+        })
+    );
+  }
+
+  // Get Filtered Data
+  static async getFilteredData(req, res, next){
+    const filtered_query = req.query;
+    // Get Data From Service
+    tryCatch(
+      await OrderService.getFilteredData(filtered_query)
+        .then((respond) => {
+          return res.send(respond);
+        })
+        .catch((err) => {
+          console.log('Getting Filtered STF Error : ',err);
           next(err);
         })
     );

@@ -84,7 +84,6 @@ class OrderService {
   // Show User MTF
   static async showSTF(userData) {
     const user_id = userData.id;
-    const project_id = userData.ProjectModelId;
 
     const string_query = `
     SELECT stfs.id as stf_id, stfs.stf_num, stfs.material_type, stfs.material_name, stfs.count, stfs.created_at,stfs.unit,
@@ -101,13 +100,47 @@ class OrderService {
       LEFT JOIN sms on sms."STFModelId"=stfs.id
       LEFT JOIN vendors on sms."VendorModelId"=vendors.id
       LEFT JOIN users on sms."supplierName"=users.id
-      WHERE stfs."UserModelId"=${user_id} AND stfs."ProjectModelId"=${project_id}
+      WHERE stfs."UserModelId"=${user_id} 
       ORDER BY stfs.stf_num DESC
     `;
 
     const result = await db.sequelize.query(string_query);
 
     return result[0];
+  }
+
+  static async getFilteredData(filtered_query){
+
+    console.log('filt : ',filtered_query);
+
+    const url_query='';
+
+
+    const string_query = `
+    SELECT stfs.id as stf_id, stfs.stf_num, stfs.material_type, stfs.material_name, stfs.count, stfs.created_at,stfs.unit,
+      sms.sm_num,
+      sms.procurement_coming_date,
+      vendors.vendor_name,
+      users.username,
+      fields.field_name,
+      situations.situation
+      FROM stfs
+      LEFT JOIN fields ON fields.id=stfs."FieldsModelId"
+      LEFT JOIN conditions cond ON cond."STFModelId" = stfs.id
+      LEFT JOIN situations ON situations.id=cond."SituationModelId"
+      LEFT JOIN sms on sms."STFModelId"=stfs.id
+      LEFT JOIN vendors on sms."VendorModelId"=vendors.id
+      LEFT JOIN users on sms."supplierName"=users.id
+      WHERE stfs."UserModelId"=2 and stfs.material_type = 'Project'
+      ORDER BY stfs.stf_num DESC
+    `;
+
+    const result = await db.sequelize.query(string_query);
+
+    // console.log('res : ',result[0]);
+
+    return result[0];
+
   }
 
   // Fetch Fields From Fields Model

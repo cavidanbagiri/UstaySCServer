@@ -13,9 +13,9 @@ const { Sequelize, DataTypes, Model } = require("sequelize");
 //   dbConfig.timezone
 // );
 
-const sequelize = new Sequelize(`postgres://${process.env.DATABASE_USER}:${process.env.DATABASE_PASSWORD}@${process.env.DATABASE_HOSTNAME}/${process.env.DATABASE_NAME}?sslmode=no-verify`)
+// const sequelize = new Sequelize(`postgres://${process.env.DATABASE_USER}:${process.env.DATABASE_PASSWORD}@${process.env.DATABASE_HOSTNAME}/${process.env.DATABASE_NAME}?sslmode=no-verify`)
 
-// const sequelize = new Sequelize('postgres://postgres:Initial_123@localhost/ustay')
+const sequelize = new Sequelize('postgres://postgres:Initial_123@localhost/ustay')
 
 const cr = async () => {
   try {
