@@ -215,17 +215,19 @@ class OrderService {
           where_query += `${key} LIKE '%${filtered_object[key]}' `
         }
         else if(key === 'created_at' ){
-          where_query += `stfs.${key} = '${filtered_object[key]}' `
+          where_query += `stfs.${key}::date = '${filtered_object[key]}' `
         }
         else{
           where_query += `${key} = '${filtered_object[key]}' `
         }
+
         where_query += 'and ';
       }
     }
 
     // After Adding Each Filtered Key, Functions add and operator and at the end, and operations will be removed 
     where_query = where_query.slice(0,-4);
+    console.log('where  : ',where_query);
     return where_query;
 
   }
