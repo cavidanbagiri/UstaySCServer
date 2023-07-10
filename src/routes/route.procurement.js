@@ -20,16 +20,14 @@ router.get('/smstatisticsresult', ProcurementController.getSMStatisticsResult);
 // Get STF Statistic Result Data
 router.get('/getstatisticresultsm', ProcurementController.fetchStatisticResultDataSM);
 
+// Get Filtered Data
+router.get('/filteredobjecstf', ProcurementController.getFilteredDataSTF);
+router.get('/filteredobjectsm', ProcurementController.getFilteredDataSM);
 
-
-
-
-
-
-
-
+// Create SM
 router.post('/createsm', ProcurementController.createSm);
 
+// Fetch Companies and Users for creatting SM
 router.get('/companies', ProcurementController.fetchCompaniesNames);
 router.get('/users', ProcurementController.fetchUsers);
 

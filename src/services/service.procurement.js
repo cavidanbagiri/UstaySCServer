@@ -1,7 +1,10 @@
+
 const db = require("../models/index");
 
 // Import Moment JS for Creating Coming Date
 const moment = require("moment");
+
+const whereQuery = require('../helpers/whereQuery');
 
 const STFModel = db.STFModel;
 const SMModel = db.SMModel;
@@ -55,6 +58,33 @@ class STFProcurementService {
     const result = await db.sequelize.query(string_query);
     return result[0];
   }
+
+  static async getFilteredDataSTF (filtered_query){
+    const where_query = whereQuery(filtered_query);
+    const string_query = `
+      SELECT stfs.id as stf_id, stfs.stf_num, stfs.material_type, stfs.material_name, stfs.count, stfs.created_at,stfs.unit,
+      sms.sm_num,
+      sms.procurement_coming_date,
+      vendors.vendor_name,
+      users.username,
+      fields.field_name,
+      situations.situation
+      FROM stfs
+      LEFT JOIN fields ON fields.id=stfs."FieldsModelId"
+      LEFT JOIN conditions cond ON cond."STFModelId" = stfs.id
+      LEFT JOIN situations ON situations.id=cond."SituationModelId"
+      LEFT JOIN sms on sms."STFModelId"=stfs.id
+      LEFT JOIN vendors on sms."VendorModelId"=vendors.id
+      LEFT JOIN users on sms."supplierName"=users.id
+      WHERE ${where_query}
+      ORDER BY stfs.stf_num DESC
+    `;
+
+    const result = await db.sequelize.query(string_query);
+
+    return result[0];
+  }
+
 }
 
 class SMProcurementService {
@@ -109,6 +139,34 @@ class SMProcurementService {
 
     return result[0];
   }
+
+  static async getFilteredDataSM (filtered_query){
+    console.log('sm filter service work');
+    const where_query = whereQuery(filtered_query);
+    const string_query = `
+      SELECT sms.id as sm_id, sms.sm_num, sms.procurement_coming_date, sms.price, sms.total, sms.currency, sms.created_at, sms.sms_amount, sms.left_over_amount,
+      users.username as orderer, vendors.vendor_name, s.situation,
+      stfs.id as stf_id, stfs.created_at, stfs.stf_num, stfs.material_name, stfs.count, stfs.unit,
+      us.username
+      FROM sms
+      LEFT JOIN stfs ON sms."STFModelId"=stfs.id
+      LEFT JOIN vendors ON sms."VendorModelId"=vendors.id
+      LEFT JOIN users ON stfs."UserModelId"=users.id
+      left join users us on us.id=sms."supplierName"
+      LEFT JOIN conditions c ON c."STFModelId"=stfs.id
+      LEFT JOIN situations s ON c."SituationModelId"=s.id
+      WHERE ${where_query}
+      ORDER BY stfs.stf_num DESC
+    `;
+
+    const result = await db.sequelize.query(string_query);
+
+    return result[0];
+  }
+
+
+
+
 }
 
 class ProcurementService {

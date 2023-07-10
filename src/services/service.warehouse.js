@@ -1,4 +1,7 @@
+
 const db = require("../models/index");
+
+const whereQuery = require('../helpers/whereQuery');
 
 const WarehouseModel = db.WarehouseModel;
 
@@ -163,6 +166,60 @@ class WarehouseService {
     const result = await db.sequelize.query(string_query);
     return result[0];
   }
+
+
+  static async getFilteredDataWait (filtered_query){
+    const where_query = whereQuery(filtered_query);
+    const string_query = `
+    SELECT sms.id as sm_id, sms.sm_num, sms.procurement_coming_date, sms.price, sms.total, sms.sms_amount, sms.left_over_amount,
+    sms.currency, 
+    users.username as orderer, vendors.vendor_name, s.situation,
+    stfs.id as stf_id, stfs.created_at, stfs.stf_num, 
+    stfs.material_name,stfs.count, stfs.unit,
+    us.username
+    FROM sms
+    LEFT JOIN stfs ON sms."STFModelId"=stfs.id
+    LEFT JOIN vendors ON sms."VendorModelId"=vendors.id
+    LEFT JOIN users ON stfs."UserModelId"=users.id
+    left join users us on us.id=sms."supplierName"
+    LEFT JOIN conditions c ON c."STFModelId"=stfs.id
+    LEFT JOIN situations s ON c."SituationModelId"=s.id
+      WHERE ${where_query}
+      ORDER BY stfs.stf_num DESC
+    `;
+
+    const result = await db.sequelize.query(string_query);
+
+    return result[0];
+  }
+
+  static async getFilteredDataReceived (filtered_query){
+    const where_query = whereQuery(filtered_query);
+    const string_query = `
+      SELECT sms.id as sm_id, sms.sm_num, sms.procurement_coming_date, sms.price, sms.total, warehouse.delivery_amount,
+      sms.currency,
+      users.username as orderer, vendors.vendor_name, s.situation,
+      stfs.id as stf_id, stfs.created_at, stfs.stf_num,
+      stfs.material_name,stfs.unit,
+      us.username
+      FROM warehouse
+      LEFT JOIN sms ON warehouse."SMModelId" = sms.id
+      LEFT JOIN stfs ON sms."STFModelId"=stfs.id
+      LEFT JOIN vendors ON sms."VendorModelId"=vendors.id
+      LEFT JOIN users ON stfs."UserModelId"=users.id
+      left join users us on us.id=sms."supplierName"
+      LEFT JOIN conditions c ON c."STFModelId"=stfs.id
+      LEFT JOIN situations s ON c."SituationModelId"=s.id
+      WHERE ${where_query}
+      ORDER BY stfs.stf_num DESC
+    `;
+
+    const result = await db.sequelize.query(string_query);
+
+    return result[0];
+  }
+
+
 
 }
 

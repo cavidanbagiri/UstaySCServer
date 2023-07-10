@@ -147,7 +147,35 @@ class ProcurementController {
     );
   }
 
+  static async getFilteredDataSTF(req, res, next) {
+    const filtered_query = req.query;
+    // Get Data From Service
+    tryCatch(
+      await ProcurementService.getSTFProcurementService().getFilteredDataSTF(filtered_query)
+        .then((respond) => {
+          return res.send(respond);
+        })
+        .catch((err) => {
+          console.log('Getting Filtered STF Error : ',err);
+          next(err);
+        })
+    );
+  }
 
+  static async getFilteredDataSM(req, res, next) {
+    const filtered_query = req.query;
+    // Get Data From Service
+    tryCatch(
+      await ProcurementService.getSMProcurementService().getFilteredDataSM(filtered_query)
+        .then((respond) => {
+          return res.send(respond);
+        })
+        .catch((err) => {
+          console.log('Getting Filtered STF Error : ',err);
+          next(err);
+        })
+    );
+  }
 
 }
 

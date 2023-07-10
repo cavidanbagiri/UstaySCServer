@@ -75,6 +75,36 @@ class WarehouseController {
     )
   }
 
+  static async getFilteredDataWait(req, res, next) {
+    const filtered_query = req.query;
+    // Get Data From Service
+    tryCatch(
+      await WarehouseService.getFilteredDataWait(filtered_query)
+        .then((respond) => {
+          return res.send(respond);
+        })
+        .catch((err) => {
+          console.log('Getting Filtered STF Error : ',err);
+          next(err);
+        })
+    );
+  }
+
+  static async getFilteredDataReceived(req, res, next) {
+    const filtered_query = req.query;
+    // Get Data From Service
+    tryCatch(
+      await WarehouseService.getFilteredDataReceived(filtered_query)
+        .then((respond) => {
+          return res.send(respond);
+        })
+        .catch((err) => {
+          console.log('Getting Filtered STF Error : ',err);
+          next(err);
+        })
+    );
+  }
+
 }
 
 module.exports = WarehouseController;
