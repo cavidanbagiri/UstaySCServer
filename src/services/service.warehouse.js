@@ -1,7 +1,7 @@
 
 const db = require("../models/index");
-
 const whereQuery = require('../helpers/whereQuery');
+const ReturnStatisticResult = require('../helpers/returnStatisticsResult');
 
 const WarehouseModel = db.WarehouseModel;
 
@@ -145,7 +145,7 @@ class WarehouseService {
       ORDER BY "SituationModelId"
     `
     const result = await db.sequelize.query(string_query);
-    return result[0];
+    return ReturnStatisticResult.returnStatisticResultSM(result[0]);
   }
 
   static async getStatisticResultData (result_value_id){

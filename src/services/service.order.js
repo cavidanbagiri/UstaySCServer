@@ -1,6 +1,7 @@
 
 const db = require("../models");
 const whereQuery = require("../helpers/whereQuery");
+const ReturnStatisticResult = require('../helpers/returnStatisticsResult');
 
 const STFModel = db.STFModel;
 const ConditionModel = db.ConditionModel;
@@ -129,7 +130,8 @@ class OrderService {
     GROUP BY "SituationModelId"
     ORDER BY "SituationModelId"
   `);
-    return result[0];
+
+    return ReturnStatisticResult.returnStatisticResultSTF(result[0]);
   }
 
   // Fetch Statistic Data For Each User
@@ -173,8 +175,7 @@ class OrderService {
   }
 
   static async getFilteredData(filtered_query) {
-    
-    const where_query = whereQuery('and',filtered_query);
+    const where_query = whereQuery("and", filtered_query);
     const string_query = `
     SELECT stfs.id as stf_id, stfs.stf_num, stfs.material_type, stfs.material_name, stfs.count, stfs.created_at,stfs.unit,
       sms.sm_num,

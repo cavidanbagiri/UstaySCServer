@@ -3,7 +3,7 @@ const db = require("../models/index");
 
 // Import Moment JS for Creating Coming Date
 const moment = require("moment");
-
+const ReturnStatisticResult = require('../helpers/returnStatisticsResult');
 const whereQuery = require('../helpers/whereQuery');
 
 const STFModel = db.STFModel;
@@ -17,7 +17,7 @@ class STFProcurementService {
       GROUP BY "SituationModelId"
       ORDER BY "SituationModelId"
     `);
-    return result[0];
+    return ReturnStatisticResult.returnStatisticResultSTF(result[0]);
   }
 
   // Fetch All STF
@@ -116,7 +116,7 @@ class SMProcurementService {
       GROUP BY "SituationModelId"
       ORDER BY "SituationModelId"
     `);
-    return result[0];
+    return ReturnStatisticResult.returnStatisticResultSM(result[0]);
   }
 
   // Fetch SM Data accoring to processing or Received
