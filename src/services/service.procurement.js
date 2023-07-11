@@ -60,7 +60,7 @@ class STFProcurementService {
   }
 
   static async getFilteredDataSTF (filtered_query){
-    const where_query = whereQuery(filtered_query);
+    const where_query = whereQuery('where',filtered_query);
     const string_query = `
       SELECT stfs.id as stf_id, stfs.stf_num, stfs.material_type, stfs.material_name, stfs.count, stfs.created_at,stfs.unit,
       sms.sm_num,
@@ -76,7 +76,7 @@ class STFProcurementService {
       LEFT JOIN sms on sms."STFModelId"=stfs.id
       LEFT JOIN vendors on sms."VendorModelId"=vendors.id
       LEFT JOIN users on sms."supplierName"=users.id
-      WHERE ${where_query}
+      ${where_query}
       ORDER BY stfs.stf_num DESC
     `;
 
@@ -141,8 +141,7 @@ class SMProcurementService {
   }
 
   static async getFilteredDataSM (filtered_query){
-    console.log('sm filter service work');
-    const where_query = whereQuery(filtered_query);
+    const where_query = whereQuery('where',filtered_query);
     const string_query = `
       SELECT sms.id as sm_id, sms.sm_num, sms.procurement_coming_date, sms.price, sms.total, sms.currency, sms.created_at, sms.sms_amount, sms.left_over_amount,
       users.username as orderer, vendors.vendor_name, s.situation,
@@ -155,7 +154,7 @@ class SMProcurementService {
       left join users us on us.id=sms."supplierName"
       LEFT JOIN conditions c ON c."STFModelId"=stfs.id
       LEFT JOIN situations s ON c."SituationModelId"=s.id
-      WHERE ${where_query}
+      ${where_query}
       ORDER BY stfs.stf_num DESC
     `;
 

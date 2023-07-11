@@ -174,7 +174,7 @@ class OrderService {
 
   static async getFilteredData(filtered_query) {
     
-    const where_query = whereQuery(filtered_query);
+    const where_query = whereQuery('and',filtered_query);
     const string_query = `
     SELECT stfs.id as stf_id, stfs.stf_num, stfs.material_type, stfs.material_name, stfs.count, stfs.created_at,stfs.unit,
       sms.sm_num,
@@ -190,7 +190,7 @@ class OrderService {
       LEFT JOIN sms on sms."STFModelId"=stfs.id
       LEFT JOIN vendors on sms."VendorModelId"=vendors.id
       LEFT JOIN users on sms."supplierName"=users.id
-      WHERE stfs."UserModelId"=2 and ${where_query}
+      WHERE stfs."UserModelId"=2  ${where_query}
       ORDER BY stfs.stf_num DESC
     `;
 

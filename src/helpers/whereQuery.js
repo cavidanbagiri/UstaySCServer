@@ -1,8 +1,11 @@
 
 
-module.exports = createWhereQuery = (filtered_object) => {
+module.exports = createWhereQuery = (start_keyword, filtered_object) => {
 
-    let where_query = '';
+    /*
+      start_keyword if filtered data for user will be add 'and' after where user id
+    */
+    let where_query = `${start_keyword} `;
 
     for (let [key, value] of Object.entries(filtered_object)) {
       if (filtered_object[key] !== "") {
@@ -25,9 +28,12 @@ module.exports = createWhereQuery = (filtered_object) => {
       }
     }
 
-    // After Adding Each Filtered Key, Functions add and operator and at the end, and operations will be removed 
-    where_query = where_query.slice(0,-4);
-    console.log('where  : ',where_query);
+      if(where_query.trim().length === start_keyword.length){
+        where_query = where_query.slice(0, -(start_keyword.length+1));
+      }
+      where_query = where_query.slice(0, -4);
+
+
     return where_query;
 
 }

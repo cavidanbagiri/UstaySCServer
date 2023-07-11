@@ -9,20 +9,19 @@ class WarehouseService {
   // Fetch Materials
   static async fetchWaitingSMS() {
     const string_query = `      
-        SELECT sms.id as sm_id, sms.sm_num, sms.procurement_coming_date, sms.price, sms.total, sms.sms_amount, sms.left_over_amount,
-        sms.currency, 
-        users.username as orderer, vendors.vendor_name, s.situation,
-        stfs.id as stf_id, stfs.created_at, stfs.stf_num, 
-        stfs.material_name,stfs.count, stfs.unit,
-        us.username
-        FROM sms
-        LEFT JOIN stfs ON sms."STFModelId"=stfs.id
-        LEFT JOIN vendors ON sms."VendorModelId"=vendors.id
-        LEFT JOIN users ON stfs."UserModelId"=users.id
-        left join users us on us.id=sms."supplierName"
-        LEFT JOIN conditions c ON c."STFModelId"=stfs.id
-        LEFT JOIN situations s ON c."SituationModelId"=s.id
-        where c."SituationModelId"=2
+    SELECT sms.id as sm_id, sms.sm_num, sms.procurement_coming_date, sms.price, sms.total, sms.sms_amount, sms.left_over_amount,
+    sms.currency, 
+    users.username as orderer, vendors.vendor_name, s.situation,
+    stfs.id as stf_id, stfs.created_at, stfs.stf_num, 
+    stfs.material_name,stfs.count, stfs.unit,
+    us.username
+    FROM sms
+    LEFT JOIN stfs ON sms."STFModelId"=stfs.id
+    LEFT JOIN vendors ON sms."VendorModelId"=vendors.id
+    LEFT JOIN users ON stfs."UserModelId"=users.id
+    left join users us on us.id=sms."supplierName"
+    LEFT JOIN conditions c ON c."STFModelId"=stfs.id
+    LEFT JOIN situations s ON c."SituationModelId"=s.id
         `;
     const result = await db.sequelize.query(string_query);
     return result[0];
@@ -74,8 +73,6 @@ class WarehouseService {
     }
     return "OK";
   }
-
-  
 
   // Find sms left_over_amount with stf_model_id
   static async findSM(STF_id) {
@@ -169,7 +166,7 @@ class WarehouseService {
 
 
   static async getFilteredDataWait (filtered_query){
-    const where_query = whereQuery(filtered_query);
+    const where_query = whereQuery('where',filtered_query);
     const string_query = `
     SELECT sms.id as sm_id, sms.sm_num, sms.procurement_coming_date, sms.price, sms.total, sms.sms_amount, sms.left_over_amount,
     sms.currency, 
@@ -184,8 +181,8 @@ class WarehouseService {
     left join users us on us.id=sms."supplierName"
     LEFT JOIN conditions c ON c."STFModelId"=stfs.id
     LEFT JOIN situations s ON c."SituationModelId"=s.id
-      WHERE ${where_query}
-      ORDER BY stfs.stf_num DESC
+    ${where_query}
+    ORDER BY stfs.stf_num DESC
     `;
 
     const result = await db.sequelize.query(string_query);
@@ -194,24 +191,24 @@ class WarehouseService {
   }
 
   static async getFilteredDataReceived (filtered_query){
-    const where_query = whereQuery(filtered_query);
+    const where_query = whereQuery('where',filtered_query);
     const string_query = `
-      SELECT sms.id as sm_id, sms.sm_num, sms.procurement_coming_date, sms.price, sms.total, warehouse.delivery_amount,
-      sms.currency,
-      users.username as orderer, vendors.vendor_name, s.situation,
-      stfs.id as stf_id, stfs.created_at, stfs.stf_num,
-      stfs.material_name,stfs.unit,
-      us.username
-      FROM warehouse
-      LEFT JOIN sms ON warehouse."SMModelId" = sms.id
-      LEFT JOIN stfs ON sms."STFModelId"=stfs.id
-      LEFT JOIN vendors ON sms."VendorModelId"=vendors.id
-      LEFT JOIN users ON stfs."UserModelId"=users.id
-      left join users us on us.id=sms."supplierName"
-      LEFT JOIN conditions c ON c."STFModelId"=stfs.id
-      LEFT JOIN situations s ON c."SituationModelId"=s.id
-      WHERE ${where_query}
-      ORDER BY stfs.stf_num DESC
+    SELECT sms.id as sm_id, sms.sm_num, sms.procurement_coming_date, sms.price, sms.total, warehouse.delivery_amount,
+    sms.currency,
+    users.username as orderer, vendors.vendor_name, s.situation,
+    stfs.id as stf_id, stfs.created_at, stfs.stf_num,
+    stfs.material_name,stfs.unit,
+    us.username
+    FROM warehouse
+    LEFT JOIN sms ON warehouse."SMModelId" = sms.id
+    LEFT JOIN stfs ON sms."STFModelId"=stfs.id
+    LEFT JOIN vendors ON sms."VendorModelId"=vendors.id
+    LEFT JOIN users ON stfs."UserModelId"=users.id
+    left join users us on us.id=sms."supplierName"
+    LEFT JOIN conditions c ON c."STFModelId"=stfs.id
+    LEFT JOIN situations s ON c."SituationModelId"=s.id
+    ${where_query}
+    ORDER BY stfs.stf_num DESC
     `;
 
     const result = await db.sequelize.query(string_query);
