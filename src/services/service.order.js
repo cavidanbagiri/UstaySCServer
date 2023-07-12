@@ -7,6 +7,23 @@ const STFModel = db.STFModel;
 const ConditionModel = db.ConditionModel;
 
 class OrderService {
+
+  static display_data_query = `SELECT stfs.id as stf_id, stfs.stf_num, stfs.material_type, stfs.material_name, stfs.count, stfs.created_at,stfs.unit,
+    sms.sm_num,
+    sms.procurement_coming_date,
+    vendors.vendor_name,
+    users.username,
+    fields.field_name,
+    situations.situation
+    FROM stfs
+    LEFT JOIN fields ON fields.id=stfs."FieldsModelId"
+    LEFT JOIN conditions cond ON cond."STFModelId" = stfs.id
+    LEFT JOIN situations ON situations.id=cond."SituationModelId"
+    LEFT JOIN sms on sms."STFModelId"=stfs.id
+    LEFT JOIN vendors on sms."VendorModelId"=vendors.id
+    LEFT JOIN users on sms."supplierName"=users.id
+  `
+
   // Check Sending Data Length
   static async checkData(order_data) {
     let count = 0;
@@ -92,20 +109,7 @@ class OrderService {
     const user_id = userData.id;
 
     const string_query = `
-    SELECT stfs.id as stf_id, stfs.stf_num, stfs.material_type, stfs.material_name, stfs.count, stfs.created_at,stfs.unit,
-      sms.sm_num,
-      sms.procurement_coming_date,
-      vendors.vendor_name,
-      users.username,
-      fields.field_name,
-      situations.situation
-      FROM stfs
-      LEFT JOIN fields ON fields.id=stfs."FieldsModelId"
-      LEFT JOIN conditions cond ON cond."STFModelId" = stfs.id
-      LEFT JOIN situations ON situations.id=cond."SituationModelId"
-      LEFT JOIN sms on sms."STFModelId"=stfs.id
-      LEFT JOIN vendors on sms."VendorModelId"=vendors.id
-      LEFT JOIN users on sms."supplierName"=users.id
+      ${this.display_data_query} 
       WHERE stfs."UserModelId"=${user_id} 
       ORDER BY stfs.stf_num DESC
     `;
@@ -137,13 +141,7 @@ class OrderService {
   // Fetch Statistic Data For Each User
   static async fetchStatisticResultData(data) {
     const string_query = `
-    SELECT stfs.stf_num, stfs.material_type, stfs.material_name, stfs.count, stfs.created_at,stfs.unit,
-      fields.field_name,
-      situations.situation
-      FROM stfs
-      LEFT JOIN fields ON fields.id=stfs."FieldsModelId"
-      LEFT JOIN conditions cond ON cond."STFModelId" = stfs.id
-      LEFT JOIN situations ON situations.id=cond."SituationModelId"
+    ${this.display_data_query} 
       WHERE stfs."UserModelId"=${data.user_id} AND cond."SituationModelId"=${data.result_value}
       ORDER BY stfs.stf_num DESC
     `;
@@ -177,20 +175,7 @@ class OrderService {
   static async getFilteredData(filtered_query) {
     const where_query = whereQuery("and", filtered_query);
     const string_query = `
-    SELECT stfs.id as stf_id, stfs.stf_num, stfs.material_type, stfs.material_name, stfs.count, stfs.created_at,stfs.unit,
-      sms.sm_num,
-      sms.procurement_coming_date,
-      vendors.vendor_name,
-      users.username,
-      fields.field_name,
-      situations.situation
-      FROM stfs
-      LEFT JOIN fields ON fields.id=stfs."FieldsModelId"
-      LEFT JOIN conditions cond ON cond."STFModelId" = stfs.id
-      LEFT JOIN situations ON situations.id=cond."SituationModelId"
-      LEFT JOIN sms on sms."STFModelId"=stfs.id
-      LEFT JOIN vendors on sms."VendorModelId"=vendors.id
-      LEFT JOIN users on sms."supplierName"=users.id
+    ${this.display_data_query}
       WHERE stfs."UserModelId"=2  ${where_query}
       ORDER BY stfs.stf_num DESC
     `;

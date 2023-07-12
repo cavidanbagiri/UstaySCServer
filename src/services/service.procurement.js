@@ -6,10 +6,26 @@ const moment = require("moment");
 const ReturnStatisticResult = require('../helpers/returnStatisticsResult');
 const whereQuery = require('../helpers/whereQuery');
 
-const STFModel = db.STFModel;
 const SMModel = db.SMModel;
 
 class STFProcurementService {
+
+  static display_data_query = `
+  SELECT stfs.id as stf_id, stfs.stf_num, stfs.material_type, stfs.material_name, stfs.count, stfs.created_at,stfs.unit,
+  sms.sm_num,
+  sms.procurement_coming_date,
+  vendors.vendor_name,
+  users.username,
+  fields.field_name,
+  situations.situation
+  FROM stfs
+  LEFT JOIN fields ON fields.id=stfs."FieldsModelId"
+  LEFT JOIN conditions cond ON cond."STFModelId" = stfs.id
+  LEFT JOIN situations ON situations.id=cond."SituationModelId"
+  LEFT JOIN sms on sms."STFModelId"=stfs.id
+  LEFT JOIN vendors on sms."VendorModelId"=vendors.id
+  LEFT JOIN users on sms."supplierName"=users.id`
+
   // Fetch STF Statistic Result
   static async getSTFStatisticsResult() {
     const result = await db.sequelize.query(`
@@ -23,21 +39,8 @@ class STFProcurementService {
   // Fetch All STF
   static async fetchAllSTF() {
     const string_query = `
-    SELECT stfs.id as stf_id, stfs.stf_num, stfs.material_type, stfs.material_name, stfs.count, stfs.created_at,stfs.unit,
-    sms.sm_num,
-    sms.procurement_coming_date,
-    vendors.vendor_name,
-    users.username,
-    fields.field_name,
-    situations.situation
-    FROM stfs
-    LEFT JOIN fields ON fields.id=stfs."FieldsModelId"
-    LEFT JOIN conditions cond ON cond."STFModelId" = stfs.id
-    LEFT JOIN situations ON situations.id=cond."SituationModelId"
-    LEFT JOIN sms on sms."STFModelId"=stfs.id
-    LEFT JOIN vendors on sms."VendorModelId"=vendors.id
-    LEFT JOIN users on sms."supplierName"=users.id
-      ORDER BY stfs.stf_num DESC
+    ${this.display_data_query}
+    ORDER BY stfs.stf_num DESC
     `;
     const result = await db.sequelize.query(string_query);
     return result[0];
@@ -45,14 +48,8 @@ class STFProcurementService {
 
   static async fetchStatisticResultData(result_value_id) {
     const string_query = `
-    SELECT situations.situation,
-    stfs.stf_num, stfs.created_at, stfs.material_name, stfs.count, stfs.unit,
-    users.username
-    FROM conditions
-    LEFT JOIN situations ON conditions."SituationModelId"=situations.id
-    LEFT JOIN stfs ON conditions."STFModelId"=stfs.id
-    LEFT JOIN users ON stfs."UserModelId"=users.id   
-    where conditions."SituationModelId"=${result_value_id}
+    ${this.display_data_query}
+    where cond."SituationModelId"=${result_value_id}
     `;
 
     const result = await db.sequelize.query(string_query);
@@ -62,20 +59,7 @@ class STFProcurementService {
   static async getFilteredDataSTF (filtered_query){
     const where_query = whereQuery('where',filtered_query);
     const string_query = `
-      SELECT stfs.id as stf_id, stfs.stf_num, stfs.material_type, stfs.material_name, stfs.count, stfs.created_at,stfs.unit,
-      sms.sm_num,
-      sms.procurement_coming_date,
-      vendors.vendor_name,
-      users.username,
-      fields.field_name,
-      situations.situation
-      FROM stfs
-      LEFT JOIN fields ON fields.id=stfs."FieldsModelId"
-      LEFT JOIN conditions cond ON cond."STFModelId" = stfs.id
-      LEFT JOIN situations ON situations.id=cond."SituationModelId"
-      LEFT JOIN sms on sms."STFModelId"=stfs.id
-      LEFT JOIN vendors on sms."VendorModelId"=vendors.id
-      LEFT JOIN users on sms."supplierName"=users.id
+      ${this.display_data_query}
       ${where_query}
       ORDER BY stfs.stf_num DESC
     `;
@@ -88,20 +72,24 @@ class STFProcurementService {
 }
 
 class SMProcurementService {
+
+  static display_data_query=`
+  SELECT sms.id as sm_id, sms.sm_num, sms.procurement_coming_date, sms.price, sms.total, sms.currency, sms.created_at, sms.sms_amount, sms.left_over_amount,
+  users.username as orderer, vendors.vendor_name, s.situation,
+  stfs.id as stf_id, stfs.created_at, stfs.stf_num, stfs.material_name, stfs.count, stfs.unit,
+  us.username
+  FROM sms
+  LEFT JOIN stfs ON sms."STFModelId"=stfs.id
+  LEFT JOIN vendors ON sms."VendorModelId"=vendors.id
+  LEFT JOIN users ON stfs."UserModelId"=users.id
+  left join users us on us.id=sms."supplierName"
+  LEFT JOIN conditions c ON c."STFModelId"=stfs.id
+  LEFT JOIN situations s ON c."SituationModelId"=s.id`
+
   // Fetch All SM
   static async getAllSm() {
     const string_query = `
-    SELECT sms.id as sm_id, sms.sm_num, sms.procurement_coming_date, sms.price, sms.total, sms.currency, sms.created_at, sms.sms_amount, sms.left_over_amount,
-    users.username as orderer, vendors.vendor_name, s.situation,
-    stfs.id as stf_id, stfs.created_at, stfs.stf_num, stfs.material_name, stfs.count, stfs.unit,
-    us.username
-    FROM sms
-    LEFT JOIN stfs ON sms."STFModelId"=stfs.id
-    LEFT JOIN vendors ON sms."VendorModelId"=vendors.id
-    LEFT JOIN users ON stfs."UserModelId"=users.id
-    left join users us on us.id=sms."supplierName"
-    LEFT JOIN conditions c ON c."STFModelId"=stfs.id
-    LEFT JOIN situations s ON c."SituationModelId"=s.id
+    ${this.display_data_query}
     `;
 
     const result = await db.sequelize.query(string_query);
@@ -122,16 +110,7 @@ class SMProcurementService {
   // Fetch SM Data accoring to processing or Received
   static async fetchStatisticResultDataSM(result_value_id) {
     const string_query = `
-    SELECT sms.* , users.username as orderer, vendors.vendor_name, s.situation,
-    stfs.created_at, stfs.stf_num, stfs.material_name,
-    stfs.count, stfs.unit, us.username
-    FROM sms
-    LEFT JOIN stfs ON sms."STFModelId"=stfs.id
-    LEFT JOIN vendors ON sms."VendorModelId"=vendors.id
-    LEFT JOIN users ON stfs."UserModelId"=users.id
-    left join users us on us.id=sms."supplierName"
-    LEFT JOIN conditions c ON c."STFModelId"=stfs.id
-    LEFT JOIN situations s ON c."SituationModelId"=s.id
+    ${this.display_data_query}
     where c."SituationModelId"=${result_value_id}
     `;
 
@@ -143,17 +122,7 @@ class SMProcurementService {
   static async getFilteredDataSM (filtered_query){
     const where_query = whereQuery('where',filtered_query);
     const string_query = `
-      SELECT sms.id as sm_id, sms.sm_num, sms.procurement_coming_date, sms.price, sms.total, sms.currency, sms.created_at, sms.sms_amount, sms.left_over_amount,
-      users.username as orderer, vendors.vendor_name, s.situation,
-      stfs.id as stf_id, stfs.created_at, stfs.stf_num, stfs.material_name, stfs.count, stfs.unit,
-      us.username
-      FROM sms
-      LEFT JOIN stfs ON sms."STFModelId"=stfs.id
-      LEFT JOIN vendors ON sms."VendorModelId"=vendors.id
-      LEFT JOIN users ON stfs."UserModelId"=users.id
-      left join users us on us.id=sms."supplierName"
-      LEFT JOIN conditions c ON c."STFModelId"=stfs.id
-      LEFT JOIN situations s ON c."SituationModelId"=s.id
+    ${this.display_data_query}
       ${where_query}
       ORDER BY stfs.stf_num DESC
     `;
